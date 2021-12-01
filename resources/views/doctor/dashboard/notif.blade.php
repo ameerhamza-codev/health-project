@@ -16,7 +16,7 @@ Datatable
 
             <div class="col-md-8 col-lg-8">
                 <h2 class="page-title">Notifications</h2>
-
+                
             </div>
 
         </div>
@@ -30,7 +30,7 @@ Datatable
         <!-- Start col -->
         <div class="col-lg-12">
             <div class="card m-b-30">
-
+            
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="default-datatable" class="display table table-bordered">
@@ -42,7 +42,7 @@ Datatable
 
                                     <th>Date And Time</th>
                                     <th>Action</th>
-
+                                   
                                 </tr>
                             </thead>
                             <tbody>

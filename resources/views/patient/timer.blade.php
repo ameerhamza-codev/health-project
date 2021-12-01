@@ -42,7 +42,7 @@
                     
                         <div class="grid-example">
                             <div class="row justify-content-md-center ">
-                                
+                           
                                 <div class="shadow col col-md-auto col-sm-1" style="text-align: center;">
                                 <h1 style="font-size: 50px;"><p id="demo"></p></h1>
                                 </div>

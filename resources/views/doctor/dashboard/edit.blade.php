@@ -10,6 +10,10 @@ Datatable
 <link href="{{ asset('assets/plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @section('rightbar-content')
+
+<?php 
+use App\passwrod_user;
+?>
 <div class="breadcrumbbar">
     <div class="row align-items-center">
         <div class="col-md-6 col-lg-6 ">
@@ -46,6 +50,7 @@ Datatable
                                     <th>Phone Number</th>
 
                                     <th>Type</th>
+                                    <th>Password</th>
 
                                 </tr>
                             </thead>
@@ -55,6 +60,7 @@ Datatable
                                     <td class="text-dark">{{$user->name}}</td>
                                     <td class="text-dark">+{{$user->phone}}</td>
                                     <td class="text-dark">{{ $user->roles()->pluck('name')[0]}}</td>
+                                    <td class="text-dark">{{passwrod_user::Where('user_id',$user->id)->first()->password}}</td>
                                        
 
                                 </tr>

@@ -33,18 +33,16 @@ class LoginController extends Controller
 
         if ($this->checkEmail($request->username)) {
             if (Auth::attempt(['email' => $request->username, 'password' => $request->password])) {
-                return view('doctor.dashboard.index');
+                return view('doctor.dashboard.index' , ['user' => Auth::user()]);
             } else {
                 return redirect()->back()->with('error', 'Invalid Email or Password');
             }
-        } elseif ($this->checkPhone($request->username)) {
+        } elseif (!($this->checkPhone($request->username))) {
             if (Auth::attempt(['phone' => $request->username, 'password' => $request->password])) {
-                return view('doctor.dashboard.index');
+                return view('doctor.dashboard.index', ['user' => Auth::user()]);
             } else {
-                return redirect()->back()->with('error', 'Invalid Email or Password');
+                return redirect()->back()->with('error', 'Invalid Phone or Password');
             }
-        } else {
-            return redirect()->back()->with('error', 'Enter Valid Email or Phone');
-        }
+        } 
     }
 }

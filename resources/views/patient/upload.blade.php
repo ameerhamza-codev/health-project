@@ -45,7 +45,11 @@
             <div class="modal-dialog modal-dialog-center" role="document">
                 <div class="modal-content" style="text-align: center; background-color: #F2F5FA;">
                     <br>
-
+                    @if(session('error'))
+                    <div class="alert alert-warning" role="alert">
+                        {{ session('error') }}
+                    </div>
+                    @endif
                     <h5 style="text-align: center;">Add Images</h5>
 
                     <br>

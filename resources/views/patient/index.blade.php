@@ -43,32 +43,32 @@
                     <br>
 
                     <h5 style="text-align: center;">Please Fill This Form</h5>
-
+                   
                     <br>
                     <div class="card-body">
                     <form action="{{ route('patient.store') }}" method="POST">
                         @csrf
                         <div class="input-group">
                        
-                            <input type="text" class="form-control" placeholder="First Name" name="fname" />
+                            <input type="text" class="form-control" placeholder="First Name" name="fname" required />
                             <span class="input-group-addon"></span>
-                            <input type="text" class="form-control" placeholder="Last Name" name="lname"/>
+                            <input type="text" class="form-control" placeholder="Last Name" name="lname" required/>
                         </div>
                         <br>
                         <div class="input-group">
-                            <input type="text" id="autoclose-date" name="dob" class="datepicker-here form-control" placeholder="Date of Birth" aria-describedby="basic-addon3" />
+                            <input type="text" id="autoclose-date" name="dob" class="datepicker-here form-control" required placeholder="Date of Birth" aria-describedby="basic-addon3" />
                             <div class="input-group-append">
                                 <span class="input-group-text" id="basic-addon3"><i class="feather icon-calendar"></i></span>
                             </div>
                         </div>
                         <br>
                         <div class="form-group mb-0">
-                            <input type="email"  class="form-control" name="email" name="inputEmail" id="inputEmail" placeholder="Email">
+                            <input type="email"  required class="form-control" name="email" name="inputEmail" id="inputEmail" placeholder="Email">
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-lg-4">
-                                <select class="select2-single form-control" name="code">
+                                <select class="select2-single form-control" required name="code">
                                     <optgroup>
                                         @foreach($code as $code)
                                         <option value="{{$code->country_code}}">{{$code->country_name}} +{{$code->country_code}}</option>
@@ -78,13 +78,13 @@
                                 </select>
                             </div>
                             <div class="col-lg-8">
-                                <input type="tel" class="form-control" name="phone" placeholder="Phone" />
+                                <input type="tel" class="form-control" required name="phone" placeholder="Phone" />
                             </div>
                         </div>
 
                         <br>
                         <div class="form-group">
-                            <textarea class="form-control" name="address" id="inputTextarea" rows="3" placeholder="Adress"></textarea>
+                            <textarea class="form-control" required name="address" id="inputTextarea" rows="3" placeholder="Adress"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer" style="background-color: #F2F5FA;">

@@ -17,13 +17,15 @@
 <link href="{{ asset('assets/plugins/slick/slick-theme.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @section('rightbar-content')
+
+
 <div class="breadcrumbbar">
     <div class="row align-items-center">
         <div class="col-md-6 col-lg-6 ">
 
             <div class="col-md-8 col-lg-8">
                 <h2 class="page-title">Dashboard</h2>
-
+                <!-- {{auth()->user()->roles()->pluck('name')[0]}} -->
             </div>
 
         </div>
@@ -53,6 +55,7 @@
                         <div class="media-body">
                             <p class="mb-0">Patients</p>
                             <h5 class="mb-0">85</h5>
+                            
                         </div>
                     </div>
                 </div>
