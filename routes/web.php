@@ -13,10 +13,9 @@
 
 
 
-Route::get('/', function () {
-    return view('doctor.login');
-});
+Route::get('/', "Auth2\LoginController@index");
 
+Route::post('/login', "Auth2\LoginController@authenticate")->name('login');
 Route::post('/settings','SettingsController@store')->name(('user.add'));
 
 Route::get('/settings', 'SettingsController@index');
