@@ -10,29 +10,53 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Route;
 
+Route::get('/', "Auth2\LoginController@index")->name('login');
 
-Route::get('/', "Auth2\LoginController@index");
-
-Route::post('/login', "Auth2\LoginController@authenticate")->name('login');
+Route::post('/login', "Auth2\LoginController@authenticate")->name('login_auth');
 Route::post('/settings','SettingsController@store')->name(('user.add'));
 
 Route::get('/settings', 'SettingsController@index');
 Route::get('/patients', function () {
-    return view('doctor.dashboard.patients');
+    if(Auth::check()){
+        return view('doctor.dashboard.patients');
+    }else{
+        return view('doctor.login');
+    }
+
+   
 });
+
+
 Route::get('notif', function () {
-    return view('doctor.dashboard.notif');
+    if (Auth::check() ) {
+        return view('doctor.dashboard.notif');
+    }
+    else{
+        return view('doctor.login');
+    }
 });
 
 Route::get('add', function () {
     return view('patient.location');
 });
 
+
 Route::get('/dashboard', function () {
-    return view('doctor.dashboard.index');
-});
+
+    if (Auth::check() ) {
+        return view('doctor.dashboard.index');
+    } else {
+        return view('doctor.login');
+    }
+})->name('doctor.dashboard');
+
+
+Route::get('/logout', 'Auth2\LoginController@logout')->name('logout');
+
 
 Route::get('/patient-area', 'PatientController@index');
 Route::post('/patient-area', 'PatientController@store')->name('patient.store');

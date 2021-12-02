@@ -8,10 +8,13 @@ Datatable
 <link href="{{ asset('assets/plugins/datatables/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 <!-- Responsive Datatable css -->
 <link href="{{ asset('assets/plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/plugins/pnotify/css/pnotify.custom.min.css') }}" rel="stylesheet" type="text/css" />
+
 @endsection
 @section('rightbar-content')
 
-<?php 
+<?php
+
 use App\passwrod_user;
 ?>
 <div class="breadcrumbbar">
@@ -30,12 +33,27 @@ use App\passwrod_user;
             </div>
         </div>
     </div>
+    @if(session('success'))
+        <br>
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
+        @if(session('error'))
+        <br>
+        <div class="alert alert-danger" role="alert">
+            {{session('error')}}
+        </div>
+        @endif
 </div>
+
+
 
 <!-- Start Contentbar -->
 <div class="contentbar">
     <!-- Start row -->
     <div class="row">
+        
         <!-- Start col -->
         <div class="col-lg-12">
             <div class="card m-b-30">
@@ -61,7 +79,7 @@ use App\passwrod_user;
                                     <td class="text-dark">+{{$user->phone}}</td>
                                     <td class="text-dark">{{ $user->roles()->pluck('name')[0]}}</td>
                                     <td class="text-dark">{{passwrod_user::Where('user_id',$user->id)->first()->password}}</td>
-                                       
+
 
                                 </tr>
                                 @endforeach
@@ -87,42 +105,42 @@ use App\passwrod_user;
                 </button>
             </div>
             <div class="modal-body" style="background-color: #F2F5FA;">
-            <form action="{{ route('user.add') }}" method="POST">
-                @csrf
-                <div class="form-group mb-0">
-                    <br>
-                    <h6>Name</h6>
-                    <input type="text" name="name" class="form-control" placeholder="Name">
-                    <br>
-                    <h6>Phone</h6>
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <select name="code" class="select2-single form-control" >
-                                <optgroup>
-                                    @foreach($code as $code)
-                                    <option  value="{{$code->country_code}}">{{$code->country_name}} +{{$code->country_code}}</option>
-                                    @endforeach
-                                </optgroup>
+                <form action="{{ route('user.add') }}" method="POST">
+                    @csrf
+                    <div class="form-group mb-0">
+                        <br>
+                        <h6>Name</h6>
+                        <input type="text" name="name" class="form-control" placeholder="Name" required>
+                        <br>
+                        <h6>Phone</h6>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <select name="code" class="select2-single form-control" required>
+                                    <optgroup>
+                                        @foreach($code as $code)
+                                        <option value="{{$code->country_code}}">{{$code->country_name}} +{{$code->country_code}}</option>
+                                        @endforeach
+                                    </optgroup>
 
-                            </select>
-                        </div>
-                        <div class="col-lg-8">
-                            <input type="tel" name="phone" class="form-control" placeholder="Phone" />
+                                </select>
+                            </div>
+                            <div class="col-lg-8">
+                                <input type="tel" name="phone" class="form-control" placeholder="Phone" required />
+                            </div>
                         </div>
                     </div>
-                </div>
-            
-                <br>
-                <h6>User</h6>
-                <select class="select2-single form-control" name="role">
-                    <optgroup>
-                        @foreach($roles as $r)
-                        @if ($r->name != 'Patient')
-                        <option value="{{$r->id}}" value="7">{{$r->name}}</option>
-                        @endif
-                        @endforeach
-                    </optgroup>
-                </select>
+
+                    <br>
+                    <h6>User</h6>
+                    <select class="select2-single form-control" name="role" required>
+                        <optgroup>
+                            @foreach($roles as $r)
+                            @if ($r->name != 'Patient')
+                            <option value="{{$r->id}}" value="7">{{$r->name}}</option>
+                            @endif
+                            @endforeach
+                        </optgroup>
+                    </select>
             </div>
             <div class="modal-footer" style="background-color: #F2F5FA;">
                 <button type="submit" class="btn btn-primary">Add User</button>
@@ -140,6 +158,8 @@ use App\passwrod_user;
 @section('script')
 <!-- Datatable js -->
 <script src="{{ asset('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/pnotify/js/pnotify.custom.min.js') }}"></script>
+<script src="{{ asset('assets/js/custom/custom-pnotify.js') }}"></script>
 <script src="{{ asset('assets/plugins/tabledit/jquery.tabledit.js') }}"></script>
 <script src="{{ asset('assets/js/custom/custom-table-editable.js') }}"></script>
 <script src="{{ asset('assets/plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>

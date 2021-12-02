@@ -2,6 +2,14 @@
 Datatable
 @endsection
 @extends('layouts.main')
+
+
+<?php 
+
+use App\Patient;
+
+$patient =Patient::all();
+?>
 @section('style')
 <!-- DataTables css -->
 <link href="{{ asset('assets/plugins/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
@@ -50,19 +58,20 @@ Datatable
                                 </tr>
                             </thead>
                             <tbody>
-                            @for($i = 0; $i <= 15; $i++)
+                   
+                            @foreach($patient as $patient)
                                 <tr>
-                                    <td class="text-dark">Tiger Nixon</td>
-                                    <td class="text-dark">0900232325</td>
-                                    <td class="text-dark">t@5.com</td>
-                                    <td class="text-dark">2011/04/25</td>
+                                    <td class="text-dark">{{$patient->first_name}} {{$patient->last_name}}</td>
+                                    <td class="text-dark">{{$patient->phone}}</td>
+                                    <td class="text-dark">{{$patient->email}}</td>
+                                    <td class="text-dark">{{$patient->date_of_birth}}</td>
                                     <td><button type="button" class="btn btn-success" style="padding-inline: 33px;" disabled><i class="feather icon-check mr-2"></i>Success</button></td>
                                     <td> <button type="button" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
                                     
                                  
-                                    <td><a type="button" data-toggle="modal" data-target="#exampleModalCenter"><img src="assets/images/profile_pic.png"  style="max-width: 30px;" alt=""></a></td>
+                                    <td><a type="button" data-toggle="modal" data-id="{{ $patient->test }}" data-target="#exampleModalCenter"><img src="assets/images/profile_pic.png"  style="max-width: 30px;" alt=""></a></td>
                                 </tr>
-                            @endfor
+                            @endforeach
                             </tbody>
                            
                         </table>
@@ -77,7 +86,7 @@ Datatable
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
-                                
+                            <input type="hidden" name="posting">
                                <img src="https://static.remove.bg/remove-bg-web/a76316286d09b12be1ebda3b400e3f44716c24d0/assets/start-1abfb4fe2980eabfbbaaa4365a0692539f7cd2725f324f904565a9a744f8e214.jpg"  style="max-width: 100%;" alt="">
                             </div>
                         </div>

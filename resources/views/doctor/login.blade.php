@@ -39,7 +39,7 @@
                                         {{ session('error') }}
                                     </div>
                                     @endif
-                                    <form action="{{ route('login') }}" method="POST">
+                                    <form action="{{ route('login_auth') }}" method="POST">
                                         @csrf
                                         <h4 class="text-black my-4 ">Welcome Back</h4>
                                         <div class="form-group shadow-sm">

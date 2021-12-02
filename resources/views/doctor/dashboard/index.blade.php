@@ -1,5 +1,12 @@
 @extends('layouts.main')
 @section('style')
+
+<?php 
+
+use App\Patient;
+
+$patient =Patient::all();
+?>
 <style>
     .datepicker {
         z-index: 9999999 !important;
@@ -120,7 +127,7 @@
                         <table class="table table-borderless">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    
                                     <th>Name</th>
                                     <th>Test Date</th>
                                     <th>Result</th>
@@ -134,24 +141,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @for($i = 0; $i <= 5; $i++) <tr>
-                                    <td> <img src="assets/images/profile_pic.png" alt="" style="max-width: 30px;"></td>
-                                    <td>Amy Ahuja</td>
-                                    <td>23-Oct-19</td>
-                                    <td><button type="button" class="btn btn-success" style="padding-inline: 33px;" disabled><i class="feather icon-check mr-2"></i>Success</button></td>
-                                    <td> <button type="button" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
-                                    <td>23-Oct-19 1:00 PM</td>
-                                    <td style="text-align: center;">
-                                        <button type="button" class="btn btn-round btn-secondary" data-toggle="modal" data-target="#ImageModalCenter"><i class="feather icon-image"></i></button>
-                                        </a>
-                                    </td>
-
-                                    </tr>
-                                    @endfor
-                                    @for($i = 0; $i <= 5; $i++) <tr>
-                                        <td> <img src="assets/images/profile_pic.png" alt="" style="max-width: 30px;"></td>
-                                        <td>John Doe</td>
-                                        <td>23-Oct-19</td>
+                                <tr>
+                                        @foreach($patient as $patient)
+                                         <td>{{$patient->first_name}} {{$patient->last_name}}</td>
+                                        <td>{{$patient->date_of_birth}}</td>
                                         <td><button type="button" class="btn btn-danger px-5" disabled><i class="feather icon-x mr-2"></i>Fail</button></td>
                                         <td> <button type="button" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
                                         <td></td>
@@ -161,7 +154,7 @@
                                         </td>
 
                                         </tr>
-                                        @endfor
+                                        @endforeach
                             </tbody>
                         </table>
                     </div>

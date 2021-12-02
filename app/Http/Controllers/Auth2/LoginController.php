@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\User;
+use Illuminate\Foundation\Console\Presets\React;
 
 class LoginController extends Controller
 {
@@ -33,16 +34,25 @@ class LoginController extends Controller
 
         if ($this->checkEmail($request->username)) {
             if (Auth::attempt(['email' => $request->username, 'password' => $request->password])) {
-                return view('doctor.dashboard.index' , ['user' => Auth::user()]);
+                return redirect()->route('doctor.dashboard',['user'=>Auth::user()]);
             } else {
                 return redirect()->back()->with('error', 'Invalid Email or Password');
             }
-        } elseif (!($this->checkPhone($request->username))) {
+        } else {
             if (Auth::attempt(['phone' => $request->username, 'password' => $request->password])) {
-                return view('doctor.dashboard.index', ['user' => Auth::user()]);
+                return redirect()->route('doctor.dashboard',['user'=>Auth::user()]);
             } else {
                 return redirect()->back()->with('error', 'Invalid Phone or Password');
             }
-        } 
+        }
+    }
+
+
+    public function logout(Request $request)
+    {   
+        
+        Auth::logout();
+       
+        return redirect()->route('login');
     }
 }

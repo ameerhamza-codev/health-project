@@ -31,7 +31,8 @@
 
                 </li>
                 <li>
-                    <a href="{{url('/')}}">
+                    <a href="{{route('logout')}}">
+                        @csrf
                         <img src="assets/images/svg-icon/logout.svg" class="img-fluid" alt="dashboard"><span>Logout</span>
                     </a>
 

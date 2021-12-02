@@ -48,7 +48,6 @@ Datatable
                             <tbody>
                                 @for($i = 0; $i <= 15; $i++) <tr>
                                     <td class="text-dark">Test No. {{$i}}</td>
-                                    <td class="text-dark"><img src="assets/images/profile_pic.png" style="max-width: 30px;" alt="">Johny doe</td>
                                     <td class="text-dark">2011/04/25 1:00 PM</td>
                                     <td> <button type="button" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
 
