@@ -1,11 +1,11 @@
 @extends('layouts.main')
 @section('style')
 
-<?php 
+<?php
 
 use App\Patient;
 
-$patient =Patient::all();
+$patient = Patient::all();
 ?>
 <style>
     .datepicker {
@@ -62,7 +62,7 @@ $patient =Patient::all();
                         <div class="media-body">
                             <p class="mb-0">Patients</p>
                             <h5 class="mb-0">85</h5>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -127,13 +127,13 @@ $patient =Patient::all();
                         <table class="table table-borderless">
                             <thead>
                                 <tr>
-                                    
+
                                     <th>Name</th>
                                     <th>Test Date</th>
                                     <th>Result</th>
                                     <th>Generate CSV</th>
                                     <th>CSV Generated</th>
-                                    <th>Pictures</th>
+                                    <th>Tests</th>
                                     <th>
 
                                     </th>
@@ -142,19 +142,19 @@ $patient =Patient::all();
                             </thead>
                             <tbody>
                                 <tr>
-                                        @foreach($patient as $patient)
-                                         <td>{{$patient->first_name}} {{$patient->last_name}}</td>
-                                        <td>{{$patient->date_of_birth}}</td>
-                                        <td><button type="button" class="btn btn-danger px-5" disabled><i class="feather icon-x mr-2"></i>Fail</button></td>
-                                        <td> <button type="button" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
-                                        <td></td>
-                                        <td style="text-align: center;">
-                                            <button type="button" class="btn btn-round btn-secondary" data-toggle="modal" data-target="#ImageModalCenter"><i class="feather icon-image"></i></button>
+                                    @foreach($patient as $patient)
+                                    <td>{{$patient->first_name}} {{$patient->last_name}}</td>
+                                    <td>{{$patient->date_of_birth}}</td>
+                                    <td><button type="button" class="btn btn-danger px-5" disabled><i class="feather icon-x mr-2"></i>Fail</button></td>
+                                    <td> <button type="button" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
+                                    <td></td>
+                                    <td>
+                                        <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px;"></a>
 
-                                        </td>
+                                    </td>
 
-                                        </tr>
-                                        @endforeach
+                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
