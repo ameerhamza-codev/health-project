@@ -65,9 +65,9 @@ class PatientController extends Controller
         Storage::putFileAs('public/images/'.Session('patient'),$back,'back.jpg');
 
         $user=Patient::Where('id',Session('patient'))->first();
-        $user->test=Storage::url('public/images/'.Session('patient').'/test.jpg');
-        $user->ID_front=Storage::url('public/images/'.Session('patient').'/front.jpg');
-        $user->ID_back=Storage::url('public/images/'.Session('patient').'/back.jpg');
+        $user->test=Storage::url('app/public/images/'.Session('patient').'/test.jpg');
+        $user->ID_front=Storage::url('app/public/images/'.Session('patient').'/front.jpg');
+        $user->ID_back=Storage::url('app/public/images/'.Session('patient').'/back.jpg');
 
         $user->save();
         }
