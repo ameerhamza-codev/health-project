@@ -93,17 +93,9 @@ class ZoomController extends Controller
 
     public function index()
     {
-        $res=$this->create([
-            'topic'      => 'Test Meeting',
-            'start_time' => '2020-04-01T10:00:00',
-            'duration'   => 30,
-            'host_video' => 1,
-            'participant_video' => 1,
-        ]);
-
-        dd($res);
-
-        //return view('zoom.index',);
+        
+        $zoom= ZoomMeetings::all();
+        return view('zoom.index',compact('zoom'));
     }
     public function store(Request $request)
     {   

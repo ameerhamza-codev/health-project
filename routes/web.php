@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', "Auth2\LoginController@index")->name('login');
 
+Route::get('/zoom',"ZoomController@index");
+
 Route::post("/Authenticate","Auth2\LoginController@authenticate")->name('login_auth');
 Route::post('/settings','SettingsController@store')->name(('user.add'));
 
