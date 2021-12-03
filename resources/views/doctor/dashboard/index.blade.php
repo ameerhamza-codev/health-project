@@ -4,7 +4,10 @@
 <?php
 
 use App\Patient;
+use App\CountryCode;
 
+$code = CountryCode::all();
+$code2 = CountryCode::all();
 $patient = Patient::all();
 ?>
 <style>
@@ -44,6 +47,13 @@ $patient = Patient::all();
             </div>
         </div>
     </div>
+
+    @if(session('meeting-success'))
+    <br>
+    <div class="alert alert-success">
+        {{ session('meeting-success') }}
+    </div>
+    @endif
 </div>
 
 
@@ -173,44 +183,47 @@ $patient = Patient::all();
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+
+
                     <div class="modal-body" style="background-color: #F2F5FA;">
+                        <form action="{{route('zoom.store')}}" method="POST">
+                            @csrf
+                            <div class="form-group mb-0">
+                                <h6>Phone</h6>
+                                <div class="row">
 
-                        <div class="form-group mb-0">
-                            <h6>Phone</h6>
-                            <div class="row">
+                                    <div class="col-lg-4">
+                                        <select class="select2-single form-control" name="code" required>
+                                            <optgroup>
+                                                @foreach($code as $code)
+                                                <option value="{{$code->country_code}}">{{$code->country_name}} +{{$code->country_code}}</option>
+                                                @endforeach
+                                            </optgroup>
 
-                                <div class="col-lg-4">
-                                    <select class="select2-single form-control" name="state">
-                                        <optgroup>
-
-                                            <option data-countryCode="UZ" value="+41">SZ +41</option>
-                                            <option data-countryCode="VU" value="678">GR +49</option>
-                                            <option data-countryCode="VA" value="379">IT +39</option>
-                                            <option data-countryCode="VE" value="58">FR +33</option>
-                                        </optgroup>
-
-                                    </select>
-                                </div>
-                                <div class="col-lg-8">
-                                    <input type="tel" class="form-control" placeholder="Phone" />
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <input type="tel" class="form-control" placeholder="Phone" required name="phone" />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <br>
+                            <br>
 
-                        <h6> Date And Time</h6>
-                        <div class="input-group">
-                            <input type="text" id="time-format" class="form-control" placeholder="dd/mm/yyyy - hh:ii aa" aria-describedby="basic-addon5" />
-                            <div class="input-group-append">
-                                <span class="input-group-text" id="basic-addon5"><i class="feather icon-calendar"></i></span>
+                            <h6> Date And Time</h6>
+                            <div class="input-group">
+                                <input type="text" id="time-format" required name="date" class="form-control" placeholder="dd/mm/yyyy - hh:ii aa" aria-describedby="basic-addon5" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon5"><i class="feather icon-calendar"></i></span>
+                                </div>
                             </div>
-                        </div>
+
                     </div>
                     <div class="modal-footer" style="background-color: #F2F5FA;">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Send To Patient</button>
+                        <button type="submit" class="btn btn-secondary">Send To Patient</button>
                         <button type="button" class="btn btn-primary">Add to Calender</button>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -263,7 +276,7 @@ $patient = Patient::all();
 
 
 
-        <div class="modal fade" id="CalModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <di v class="modal fade" id="CalModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="card-body">
@@ -279,34 +292,34 @@ $patient = Patient::all();
                                 <div class="modal-content shadow" style="background-color: #F2F5FA;">
 
                                     <div class="modal-body">
-                                        <form name="save-event" method="post">
+                                        <form name="save-event" >
                                             <div class="row">
                                                 <div class="col-lg-4">
-                                                    <select class="select2-single form-control" name="state">
+                                                    <select class="select2-single form-control" id="ev_code" name="code" required>
                                                         <optgroup>
-
-                                                            <option data-countryCode="UZ" value="+41">SZ +41</option>
-                                                            <option data-countryCode="VU" value="678">GR +49</option>
-                                                            <option data-countryCode="VA" value="379">IT +39</option>
-                                                            <option data-countryCode="VE" value="58">FR +33</option>
+                                                            @foreach($code2 as $code)
+                                                            <option value="{{$code->country_code}}">{{$code->country_name}} +{{$code->country_code}}</option>
+                                                            @endforeach
                                                         </optgroup>
+
                                                     </select>
                                                 </div>
                                                 <div class="col-lg-8">
-                                                    <input type="tel" class="form-control" placeholder="Phone" />
+                                                    <input type="tel" class="form-control" id="ev_tel" placeholder="Phone" required />
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label>Event start</label>
-                                                <input type="text" name="evtStart" class="form-control col-xs-3" />
+                                                <input type="text" name="evtStart" id="ev_date"class="form-control col-xs-3" required />
                                             </div>
 
-                                        </form>
+                                       
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                        <button type="button" onclick="createCalEvent()" class="btn btn-primary">Save changes</button>
                                     </div>
+                                    </form>
                                 </div>
                                 <!-- /.modal-content -->
                             </div>
@@ -356,6 +369,7 @@ $patient = Patient::all();
         editable: true,
         eventSources: [{
             events: [{
+
                 title: "event3",
                 start: "2019-03-09T12:30:00"
             }],
@@ -380,6 +394,16 @@ $patient = Patient::all();
         selectable: true,
         snapDuration: '00:10:00'
     });
+
+    function createCalEvent() {
+
+        var event = {
+            
+            title: 'Appointment With ' + document.getElementById('ev_code').value + ' ' + document.getElementById('ev_tel').value,
+            start: document.getElementById('ev_date').value,
+        };
+        $('#calendarFull').fullCalendar('renderEvent', event, true);
+    }
 </script>
 
 @endsection

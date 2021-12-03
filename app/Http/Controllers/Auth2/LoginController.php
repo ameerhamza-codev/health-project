@@ -7,13 +7,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\User;
+use Exception;
 use Illuminate\Foundation\Console\Presets\React;
 
 class LoginController extends Controller
 {
     public function index()
-    {
+    {   
+        if(Auth::check()){
+            return redirect('/dashboard');
+        }
+        else{
         return view('doctor.login');
+        }
     }
 
 
@@ -30,8 +36,8 @@ class LoginController extends Controller
 
 
     public function authenticate(Request $request)
-    {
-
+    {   
+       
         if ($this->checkEmail($request->username)) {
             if (Auth::attempt(['email' => $request->username, 'password' => $request->password])) {
                 return redirect()->route('doctor.dashboard',['user'=>Auth::user()]);

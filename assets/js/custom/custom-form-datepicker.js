@@ -22,10 +22,11 @@ $(document).ready(function() {
 	    dateFormat: 'MM yyyy'
 	});
     $('#time-format').datepicker({
-    	language: 'en',	    
-	    timeFormat: 'hh:ii aa',
+    	language: 'en',
+		dateFormat: 'yyyy/mm/dd',	    
+	    timeFormat: 'hh:ii',
 	    timepicker: true,
-	    dateTimeSeparator: ' - '
+	    dateTimeSeparator: ' T '
 	});
     $('#multi-date').datepicker({
 	    language: 'en',

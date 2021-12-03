@@ -16,10 +16,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', "Auth2\LoginController@index")->name('login');
 
-Route::post('/login', "Auth2\LoginController@authenticate")->name('login_auth');
+Route::post("/Authenticate","Auth2\LoginController@authenticate")->name('login_auth');
 Route::post('/settings','SettingsController@store')->name(('user.add'));
 
 Route::get('/settings', 'SettingsController@index');
+
+Route::post('/zoom-meeting', 'ZoomController@store')->name('zoom.store');
+
 Route::get('/patients', function () {
     if(Auth::check()){
         return view('doctor.dashboard.patients');
@@ -56,6 +59,7 @@ Route::get('/dashboard', function () {
 
 
 Route::get('/logout', 'Auth2\LoginController@logout')->name('logout');
+
 
 
 Route::get('/patient-area', 'PatientController@index');
