@@ -519,8 +519,8 @@ if (typeof jQuery === 'undefined') {
              */
             $table.on('click', 'button.tabledit-save-button', function(event) {
                 if (event.handled !== true) {
-                    event.preventDefault();
-
+                    event.preventDefault($(this).parents('tr').find('td.tabledit-edit-mode'));
+                    console.log()
                     // Submit and update all columns.
                     Edit.submit($(this).parents('tr').find('td.tabledit-edit-mode'));
 

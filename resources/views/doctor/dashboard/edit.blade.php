@@ -34,17 +34,17 @@ use App\passwrod_user;
         </div>
     </div>
     @if(session('success'))
-        <br>
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-        @endif
-        @if(session('error'))
-        <br>
-        <div class="alert alert-danger" role="alert">
-            {{session('error')}}
-        </div>
-        @endif
+    <br>
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+    @if(session('error'))
+    <br>
+    <div class="alert alert-danger" role="alert">
+        {{session('error')}}
+    </div>
+    @endif
 </div>
 
 
@@ -53,14 +53,14 @@ use App\passwrod_user;
 <div class="contentbar">
     <!-- Start row -->
     <div class="row">
-        
+
         <!-- Start col -->
         <div class="col-lg-12">
             <div class="card m-b-30">
 
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table table-bordered" id="edit-btn">
+                        <table class="table table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -69,19 +69,44 @@ use App\passwrod_user;
 
                                     <th>Type</th>
                                     <th>Password</th>
+                                    <th>Action</th>
 
                                 </tr>
                             </thead>
                             <tbody>
+                                @csrf
                                 @foreach($users as $user)
+                                <form action="{{ route('doctor.update')}}" id="edit-form" method="POST">
+                                    @csrf
                                 <tr>
-                                    <td class="text-dark">{{$user->name}}</td>
-                                    <td class="text-dark">+{{$user->phone}}</td>
-                                    <td class="text-dark">{{ $user->roles()->pluck('name')[0]}}</td>
-                                    <td class="text-dark">{{passwrod_user::Where('user_id',$user->id)->first()->password}}</td>
-
-
+                                    <input type="hidden" name="id" value="{{$user->id}}">
+                                    <td class="text-dark">
+                                        <input name="name" value="{{$user->name}}">
+                                    </td>
+                                    <td class="text-dark">
+                                        <input name="phone" value="{{$user->phone}}">
+                                    </td>
+                                    <td class="text-dark">
+                                        <select class="select2-single form-control" name="role" required>
+                                            <optgroup>
+                                                <option  value="{{ $user->roles()->pluck('id')[0]}}" selected  hidden> {{ $user->roles()->pluck('name')[0]}}</option>
+                                                @foreach($roles as $r)
+                                                @if ($r->name != 'Patient')
+                                                <option value="{{$r->id}}" >{{$r->name}}</option>
+                                                @endif
+                                                @endforeach
+                                            </optgroup>
+                                        </select>
+                                    </td>
+                                    <input type="hidden" id="delete" name="delete" value="0">
+                                    <td class="text-dark">
+                                        {{passwrod_user::Where('user_id',$user->id)->first()->password}}</td>
+                                    <td class="text-dark">
+                                        <button type="submit" class="btn btn-outline-success"><i class="feather icon-check"></i></button>
+                                        <button type="button" onclick="deleteDoctor()" class="btn btn-outline-danger"><i class="feather icon-trash"></i></button>
+                                    </td>
                                 </tr>
+                                </form>
                                 @endforeach
                             </tbody>
 
@@ -156,6 +181,21 @@ use App\passwrod_user;
 <!-- End Contentbar -->
 @endsection
 @section('script')
+
+<script>
+    document.getElementById("edit-btn").onclick = function() {
+
+        console.log("clicked");
+    }
+
+    function deleteDoctor() {
+        
+            document.getElementById("delete").value = 1;
+            document.getElementById("edit-form").submit();
+        
+    }
+</script>
+
 <!-- Datatable js -->
 <script src="{{ asset('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/pnotify/js/pnotify.custom.min.js') }}"></script>

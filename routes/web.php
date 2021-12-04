@@ -22,6 +22,9 @@ Route::get('/zoom',"ZoomController@index");
 
 Route::post("/Authenticate","Auth2\LoginController@authenticate")->name('login_auth');
 Route::post('/settings','SettingsController@store')->name(('user.add'));
+Route::post('/settings/update','SettingsController@update')->name(('doctor.update'));
+
+Route::post('/settings/delete/','SettingsController@destroy')->name(('doctor.delete'));
 
 Route::get('/settings', 'SettingsController@index');
 
