@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('/sms', 'SmsController@sendSMS');
+
 Route::get('/', "Auth2\LoginController@index")->name('login');
 
 Route::get('/zoom',"ZoomController@index");

@@ -46,9 +46,9 @@ class PatientController extends Controller
         if($request->hasFile('Test') && $request->hasFile('IDBack') && $request->hasFile('IDFront'))
         {
             $validator=Validator::make($request->all(),[
-                'Test'=>'required|mimes:jpg,jpeg,png|max:2048',
-                'IDBack'=>'required|mimes:jpg,jpeg,png|max:2048',
-                'IDFront'=>'required|mimes:jpg,jpeg,png|max:2048',
+                'Test'=>'required|mimes:jpg,jpeg,png',
+                'IDBack'=>'required|mimes:jpg,jpeg,png',
+                'IDFront'=>'required|mimes:jpg,jpeg,png',
             ]);
 
             if ($validator->fails()) {

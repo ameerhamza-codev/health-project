@@ -9,12 +9,14 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "clicksend/clicksend-php": "^5.0",
         "fideloper/proxy": "^4.0",
         "firebase/php-jwt": "^5.5",
         "guzzlehttp/guzzle": "^7.4",
         "laravel/framework": "^6.0",
         "laravel/helpers": "^1.4",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "twilio/sdk": "^6.31"
     },
     "require-dev": {
         "filp/whoops": "^2.0",
@@ -22,6 +24,7 @@
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^3.0",
         "phpunit/phpunit": "^8.0"
+        
     },
     "config": {
         "optimize-autoloader": true,
@@ -35,6 +38,8 @@
     },
     "autoload": {
         "psr-4": {
+            
+            "ClickSend\\": "clicksend/clicksend-php/",
             "App\\": "app/"
         },
         "classmap": [

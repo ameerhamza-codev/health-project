@@ -4,8 +4,63 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "262243fe80c7b505abf576f473cca896",
+    "content-hash": "55452238996792ee9b32c7e231f44ab7",
     "packages": [
+        {
+            "name": "clicksend/clicksend-php",
+            "version": "v5.0.75",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ClickSend/clicksend-php.git",
+                "reference": "53f1d87d5b40508d3a1fe76a1b0597b4b623b5c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ClickSend/clicksend-php/zipball/53f1d87d5b40508d3a1fe76a1b0597b4b623b5c5",
+                "reference": "53f1d87d5b40508d3a1fe76a1b0597b4b623b5c5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "^6.2|^7.3",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2.12",
+                "phpunit/phpunit": "^4.8",
+                "squizlabs/php_codesniffer": "~2.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ClickSend\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Swagger and contributors",
+                    "homepage": "https://github.com/swagger-api/swagger-codegen"
+                }
+            ],
+            "homepage": "http://swagger.io",
+            "keywords": [
+                "api",
+                "php",
+                "sdk",
+                "swagger"
+            ],
+            "support": {
+                "issues": "https://github.com/ClickSend/clicksend-php/issues",
+                "source": "https://github.com/ClickSend/clicksend-php/tree/v5.0.75"
+            },
+            "time": "2021-08-10T02:36:30+00:00"
+        },
         {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "v0.1.1",
@@ -1412,16 +1467,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.55.0",
+            "version": "2.55.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "b46249911cba301e9eb3f05af68cf2aacc1f9d05"
+                "reference": "8c2a18ce3e67c34efc1b29f64fe61304368259a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/b46249911cba301e9eb3f05af68cf2aacc1f9d05",
-                "reference": "b46249911cba301e9eb3f05af68cf2aacc1f9d05",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/8c2a18ce3e67c34efc1b29f64fe61304368259a2",
+                "reference": "8c2a18ce3e67c34efc1b29f64fe61304368259a2",
                 "shasum": ""
             },
             "require": {
@@ -1504,7 +1559,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-02T16:53:55+00:00"
+            "time": "2021-12-03T14:59:52+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -4567,6 +4622,60 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/2.2.3"
             },
             "time": "2020-07-13T06:12:54+00:00"
+        },
+        {
+            "name": "twilio/sdk",
+            "version": "6.31.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twilio/twilio-php.git",
+                "reference": "be59275f0fc311cb45d5303d47bffaa06a19d6e5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/be59275f0fc311cb45d5303d47bffaa06a19d6e5",
+                "reference": "be59275f0fc311cb45d5303d47bffaa06a19d6e5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "^6.3 || ^7.0",
+                "phpunit/phpunit": ">=4.5",
+                "theseer/phpdox": "^0.12.0"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "An HTTP client to execute the API requests"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Twilio\\": "src/Twilio/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Twilio API Team",
+                    "email": "api@twilio.com"
+                }
+            ],
+            "description": "A PHP wrapper for Twilio's API",
+            "homepage": "http://github.com/twilio/twilio-php",
+            "keywords": [
+                "api",
+                "sms",
+                "twilio"
+            ],
+            "support": {
+                "issues": "https://github.com/twilio/twilio-php/issues",
+                "source": "https://github.com/twilio/twilio-php/tree/6.31.2"
+            },
+            "time": "2021-12-01T22:34:49+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

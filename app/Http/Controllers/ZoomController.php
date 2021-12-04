@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use App\ZoomMeetings;
+use App\Http\Controllers\SMSController;
 use Illuminate\Support\Facades\Auth;
 
 class ZoomController extends Controller
@@ -106,7 +107,7 @@ class ZoomController extends Controller
     }
     public function store(Request $request)
     {   
-        
+        $sms= new SMSController();
 
         $meeting=new ZoomMeetings();
         $meeting->topic="Doctor Appointment";
@@ -122,11 +123,14 @@ class ZoomController extends Controller
 
         $meeting->url=$res['data']['join_url'];
         $meeting->start_url=$res['data']['start_url'];
+        
+        $sms->sendSMS($meeting->phone,$meeting->url,$meeting->start_time);
 
         
         $meeting->save();
 
         $url=$res['data']['join_url'];
+
         return redirect()->back()->with('meeting-success','Meeting Created Successfully');
     }
 }
