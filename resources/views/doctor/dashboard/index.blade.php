@@ -5,7 +5,9 @@
 
 use App\Patient;
 use App\CountryCode;
+use App\ZoomMeetings;
 
+$meetings = ZoomMeetings::all();
 $code = CountryCode::all();
 $code2 = CountryCode::all();
 $patient = Patient::all();
@@ -290,9 +292,10 @@ $patient = Patient::all();
                         <div class="modal fade" id="event-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content shadow" style="background-color: #F2F5FA;">
-
+                                <form action="{{route('zoom.store')}}" method="POST">
+                                     @csrf
                                     <div class="modal-body">
-                                        <form name="save-event" >
+                                        <form name="save-event">
                                             <div class="row">
                                                 <div class="col-lg-4">
                                                     <select class="select2-single form-control" id="ev_code" name="code" required>
@@ -305,19 +308,19 @@ $patient = Patient::all();
                                                     </select>
                                                 </div>
                                                 <div class="col-lg-8">
-                                                    <input type="tel" class="form-control" id="ev_tel" placeholder="Phone" required />
+                                                    <input type="tel" class="form-control" id="ev_tel" name="phone" placeholder="Phone" required />
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label>Event start</label>
-                                                <input type="text" name="evtStart" id="ev_date"class="form-control col-xs-3" required />
+                                                <input type="text" name="date" id="ev_date" class="form-control col-xs-3" required />
                                             </div>
 
-                                       
+
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        <button type="button" onclick="createCalEvent()" class="btn btn-primary">Save changes</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
                                     </div>
                                     </form>
                                 </div>
@@ -329,8 +332,8 @@ $patient = Patient::all();
                     </div>
                 </div>
             </div>
-        </div>
-    </div> <!-- End row -->
+    </div>
+</div> <!-- End row -->
 </div>
 
 
@@ -378,7 +381,7 @@ $patient = Patient::all();
         }],
         select: function(start, end, jsEvent, view) {
             // set values in inputs
-            $('#event-modal').find('input[name=evtStart]').val(
+            $('#event-modal').find('input[id=ev_date]').val(
                 start.format('YYYY-MM-DD HH:mm:ss')
             );
             $('#event-modal').find('input[name=evtEnd]').val(
@@ -395,15 +398,34 @@ $patient = Patient::all();
         snapDuration: '00:10:00'
     });
 
-    function createCalEvent() {
+    $(document).ready(function() {
+        var sites = @json($meetings);
 
-        var event = {
-            
-            title: 'Appointment With ' + document.getElementById('ev_code').value + ' ' + document.getElementById('ev_tel').value,
-            start: document.getElementById('ev_date').value,
-        };
-        $('#calendarFull').fullCalendar('renderEvent', event, true);
-    }
+        for (i in sites) {
+
+       
+        date=sites[i].start_time;
+        if(!(date.includes("T"))){
+            date = date.substring(0, 10) + 'T' + date.substring(10 + 1);
+
+        }
+        date= date.replace(/ /g, "");
+        
+
+        date= date.replace(/\//g,'-');
+
+            $('#calendarFull').fullCalendar('renderEvent', {
+                title: "Appointment with " + ' ' + sites[i].phone,
+                start: date,
+
+            }, true);
+        }
+
+
+
+    });
+
+    
 </script>
 
 @endsection

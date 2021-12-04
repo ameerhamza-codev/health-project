@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use App\ZoomMeetings;
+use Illuminate\Support\Facades\Auth;
 
 class ZoomController extends Controller
 {
@@ -93,9 +94,15 @@ class ZoomController extends Controller
 
     public function index()
     {
-        
+        if(Auth::check()){
+
+            
         $zoom= ZoomMeetings::all();
         return view('zoom.index',compact('zoom'));
+        }else{
+            return redirect('/');
+        }
+        
     }
     public function store(Request $request)
     {   
