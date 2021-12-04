@@ -107,13 +107,15 @@
 
 
 
-
             </div>
         </div>
     </div>
-    <script>
 
-    </script>
+    
+
+
+
+
     <!-- End Containerbar -->
     <!-- Start JS -->
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
