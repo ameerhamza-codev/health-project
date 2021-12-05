@@ -30,7 +30,7 @@ $patient = Patient::all();
         </div>
         <div class="col-md-6 col-lg-6">
             <div class="widgetbar">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#CalModalCenter"><i class="feather icon-file mr-2"></i>Bulk Generate CSV</button>
+                <a href="{{route('bulk-generate')}}" class="btn btn-primary"  ><i class="feather icon-file mr-2"></i>Bulk Generate CSV</a>
             </div>
         </div>
     </div>
@@ -46,36 +46,48 @@ $patient = Patient::all();
                     <div class="card-body">
                         <div class="table-responsive">
                             <table id="default-datatable" class="display table table-bordered">
+
                                 <thead>
                                     <tr>
+                                        
                                         <th>Name</th>
                                         <th>Phone Number</th>
                                         <th>Email</th>
                                         <th>Date of Birth</th>
                                         <th>Result</th>
                                         <th>Generate CSV</th>
-                                        <th>Picture</th>
+                                        
+                                        <th></th>
                                     </tr>
+
                                 </thead>
                                 <tbody>
-
                                     @foreach($patient as $patient)
                                     <tr>
-                                        <td class="text-dark">{{$patient->first_name}} {{$patient->last_name}}</td>
-                                        <td class="text-dark">{{$patient->phone}}</td>
-                                        <td class="text-dark">{{$patient->email}}</td>
-                                        <td class="text-dark">{{$patient->date_of_birth}}</td>
-                                        <td><button type="button" class="btn btn-success" style="padding-inline: 33px;" disabled><i class="feather icon-check mr-2"></i>Success</button></td>
-                                        <td> <button type="button" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
+                                        <form method="POST" action="{{ route('generateCSV') }}">
+                                            @csrf
 
-                                        <td>
-                                            <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px;"></a>
 
-                                        </td>
+                                            
+
+                                            <td class="text-dark">{{$patient->first_name}} {{$patient->last_name}}</td>
+                                            <td class="text-dark">{{$patient->phone}}</td>
+                                            <td class="text-dark">{{$patient->email}}</td>
+                                            <td class="text-dark">{{$patient->date_of_birth}}</td>
+                                            <td class="text-dark"><button type="button" class="btn btn-success" style="padding-inline: 33px;" disabled><i class="feather icon-check mr-2"></i>Success</button></td>
+                                            <td class="text-dark"><button type="submit" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
+
+                                            <td class="text-dark">
+                                                <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px;"></a>
+                                            </td>
+                                            <td><input type="hidden" name="id" value="{{$patient->id}}"></td>
+                                            </form>
                                     </tr>
+                                    
                                     @endforeach
-                                </tbody>
 
+                                </tbody>
+                               
                             </table>
                         </div>
                     </div>

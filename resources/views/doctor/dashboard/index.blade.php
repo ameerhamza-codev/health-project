@@ -11,6 +11,8 @@ $meetings = ZoomMeetings::all();
 $code = CountryCode::all();
 $code2 = CountryCode::all();
 $patient = Patient::all();
+$paitentno = Patient::all()->count();
+$meetingsno = ZoomMeetings::all()->count();
 ?>
 <style>
     .datepicker {
@@ -73,7 +75,7 @@ $patient = Patient::all();
                         <span class="align-self-center mr-3 action-icon badge badge-secondary-inverse"><i class="feather icon-users"></i></span>
                         <div class="media-body">
                             <p class="mb-0">Patients</p>
-                            <h5 class="mb-0">85</h5>
+                            <h5 class="mb-0">{{$paitentno}}</h5>
 
                         </div>
                     </div>
@@ -88,7 +90,7 @@ $patient = Patient::all();
                         <span class="align-self-center mr-3 action-icon badge badge-secondary-inverse"><i class="feather icon-calendar"></i></span>
                         <div class="media-body">
                             <p class="mb-0">Calender</p>
-                            <h5 class="mb-0">239 Bookings</h5>
+                            <h5 class="mb-0">{{$meetingsno}} Bookings</h5>
                         </div>
                     </div>
                 </div>
@@ -153,20 +155,27 @@ $patient = Patient::all();
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    @foreach($patient as $patient)
-                                    <td>{{$patient->first_name}} {{$patient->last_name}}</td>
-                                    <td>{{$patient->date_of_birth}}</td>
-                                    <td><button type="button" class="btn btn-danger px-5" disabled><i class="feather icon-x mr-2"></i>Fail</button></td>
-                                    <td> <button type="button" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
-                                    <td></td>
-                                    <td>
-                                        <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px; max-height:50px"></a>
 
-                                    </td>
+                                <form method="POST" action="{{ route('generateCSV') }}">
+                                    <tr>
+                                        @csrf
+                                        @foreach($patient as $patient)
+                                        <input type="hidden" name="id" value="{{$patient->id}}">
+                                        <td>{{$patient->first_name}} {{$patient->last_name}}</td>
+                                        <td>{{$patient->date_of_birth}}</td>
+                                        <td><button type="button" class="btn btn-danger px-5" disabled><i class="feather icon-x mr-2"></i>Fail</button></td>
+                                        <td> <button type="submit" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
+                                        <td></td>
+                                        <td>
+                                            <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px; max-height:50px"></a>
+
+                                        </td>
+                                
 
                                 </tr>
                                 @endforeach
+
+                                </form>
                             </tbody>
                         </table>
                     </div>
@@ -292,36 +301,36 @@ $patient = Patient::all();
                         <div class="modal fade" id="event-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content shadow" style="background-color: #F2F5FA;">
-                                <form action="{{route('zoom.store')}}" method="POST">
-                                     @csrf
-                                    <div class="modal-body">
-                                        <form name="save-event">
-                                            <div class="row">
-                                                <div class="col-lg-4">
-                                                    <select class="select2-single form-control" id="ev_code" name="code" required>
-                                                        <optgroup>
-                                                            @foreach($code2 as $code)
-                                                            <option value="{{$code->country_code}}">{{$code->country_name}} +{{$code->country_code}}</option>
-                                                            @endforeach
-                                                        </optgroup>
+                                    <form action="{{route('zoom.store')}}" method="POST">
+                                        @csrf
+                                        <div class="modal-body">
+                                            <form name="save-event">
+                                                <div class="row">
+                                                    <div class="col-lg-4">
+                                                        <select class="select2-single form-control" id="ev_code" name="code" required>
+                                                            <optgroup>
+                                                                @foreach($code2 as $code)
+                                                                <option value="{{$code->country_code}}">{{$code->country_name}} +{{$code->country_code}}</option>
+                                                                @endforeach
+                                                            </optgroup>
 
-                                                    </select>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <input type="tel" class="form-control" id="ev_tel" name="phone" placeholder="Phone" required />
+                                                    </div>
                                                 </div>
-                                                <div class="col-lg-8">
-                                                    <input type="tel" class="form-control" id="ev_tel" name="phone" placeholder="Phone" required />
+                                                <div class="form-group">
+                                                    <label>Event start</label>
+                                                    <input type="text" name="date" id="ev_date" class="form-control col-xs-3" required />
                                                 </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Event start</label>
-                                                <input type="text" name="date" id="ev_date" class="form-control col-xs-3" required />
-                                            </div>
 
 
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
-                                    </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                        </div>
                                     </form>
                                 </div>
                                 <!-- /.modal-content -->
@@ -403,16 +412,16 @@ $patient = Patient::all();
 
         for (i in sites) {
 
-       
-        date=sites[i].start_time;
-        if(!(date.includes("T"))){
-            date = date.substring(0, 10) + 'T' + date.substring(10 + 1);
 
-        }
-        date= date.replace(/ /g, "");
-        
+            date = sites[i].start_time;
+            if (!(date.includes("T"))) {
+                date = date.substring(0, 10) + 'T' + date.substring(10 + 1);
 
-        date= date.replace(/\//g,'-');
+            }
+            date = date.replace(/ /g, "");
+
+
+            date = date.replace(/\//g, '-');
 
             $('#calendarFull').fullCalendar('renderEvent', {
                 title: "Appointment with " + ' ' + sites[i].phone,
@@ -424,8 +433,6 @@ $patient = Patient::all();
 
 
     });
-
-    
 </script>
 
 @endsection

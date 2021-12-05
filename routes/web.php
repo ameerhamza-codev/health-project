@@ -73,6 +73,9 @@ Route::get('/patient-area', 'PatientController@index')->name('patient.begin');
 Route::post('/patient-area', 'PatientController@store')->name('patient.store');
 Route::post('/upload','PatientController@upload')->name('patient.upload');
 
+Route::post('/generate-csv','SettingsController@generateCSV')->name('generateCSV');
+Route::get('/bulk-csv','SettingsController@bulkCSV')->name('bulk-generate');
+
 Route::get('/timer', function () {
     return view('patient.timer');
 });
