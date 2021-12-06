@@ -10,6 +10,12 @@ Datatable
 <link href="{{ asset('assets/plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @section('rightbar-content')
+
+<?php 
+use App\Patient;
+$patient= Patient::all()->sortByDesc('id');
+
+?>
 <div class="breadcrumbbar">
     <div class="row align-items-center">
         <div class="col-md-6 col-lg-6 ">
@@ -46,15 +52,21 @@ Datatable
                                 </tr>
                             </thead>
                             <tbody>
-                                @for($i = 0; $i <= 15; $i++) <tr>
-                                    <td class="text-dark">Test No. {{$i}}</td>
-                                    <td class="text-dark">Patient Name</td>
-                                    <td class="text-dark">2011/04/25 1:00 PM</td>
-                                    <td> <button type="button" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
-
+                            @foreach($patient as $patient)
+                                    <tr>
+                                    <form method="POST"  action="{{ route('accept_session') }}">
+                                        @csrf
+                                    <input type="hidden" name="id" value="{{$patient->id}}">
+                                    <td class="text-dark">{{$patient->test_no }}</td>
+                                    <td class="text-dark">{{$patient->first_name}} {{$patient->last_name}}</td>
+                                    <td class="text-dark">{{$patient->created_at}}</td>
+                                    @if($patient->test_status == null)
+                                    <td> <button type="submit" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Access Test</button></td>
+                                    @endif
 
                                     </tr>
-                                    @endfor
+                                    </form>
+                                @endforeach
                             </tbody>
                             <tfoot>
                                 <tr>

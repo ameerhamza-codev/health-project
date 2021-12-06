@@ -9,6 +9,8 @@ use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Illuminate\Support\Facades\Validator;
+use App\ZoomMeetings;
+use Illuminate\Support\Facades\Redirect;
 
 class PatientController extends Controller
 {
@@ -35,6 +37,23 @@ class PatientController extends Controller
         Session(['patient' => $patient->id]);
         return view('patient.timer');
     }
+
+    public function status()
+    {
+        $patient = Patient::find(Session('patient'));
+        
+       
+        if ($patient->test_status !=null) {
+            
+            $meet = ZoomMeetings::where('id',$patient->test_status)->first();
+            echo ($meet->url);
+            
+        } else {
+            echo "null";
+        }
+        
+    }
+
     public function upload(Request $request)
     {
 

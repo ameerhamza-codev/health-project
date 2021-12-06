@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php
+
+use App\Patient;
+use Illuminate\Console\Scheduling\Schedule;
+
+
+function schedule(Schedule $schedule)
+{
+    $schedule->call(function () {
+
+        $patient = Patient::where('id', '1')->first();
+        dd($patient);
+    })->everyFiveSeconds();
+}
+?>
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -37,10 +53,10 @@
 
     <div id="containerbar px-5" style="text-align: center;">
         <br><br><br><br><br>
-   
-                <div class="card-body">
-                    
-                        <div class="grid-example">
+
+        <div class="card-body">
+
+            <!-- <div class="grid-example">
                             <div class="row justify-content-md-center ">
                            
                                 <div class="shadow col col-md-auto col-sm-1" style="text-align: center;">
@@ -48,15 +64,23 @@
                                 </div>
                               </div>
                              
-                        </div>
-                    </div>
-               
-    
+                        </div> -->
+        </div>
+
+
         <h3>Please Wait</h3>
         <div class="spinner-border text-primary" role="status">
             <span class="sr-only"></span>
 
+
         </div>
+        <br>
+        <br>
+        <br>
+        <a id="meet" target="_blank" style="display: none;" class="btn btn-primary mx-5"> Join Meet </a>
+        <h1 id="tab" style="display: none;">DONOT CLOSE THIS TAB</h1>
+
+
 
     </div>
     <!-- End Containerbar -->
@@ -83,39 +107,15 @@
 </body>
 
 <script>
-// Set the date we're counting down to
-var countDownDate = new Date("Jan 5, 2022 15:37:25").getTime();
+    // Set the date we're counting down to
+    var countDownDate = new Date("Jan 5, 2022 15:37:25").getTime();
 
-// Update the count down every 1 second
-var x = setInterval(function() {
+    // Update the count down every 1 second
+    // s
 
-  // Get today's date and time
-  var now = new Date().getTime();
-
-  // Find the distance between now and the count down date
-  var distance = countDownDate - now;
-
-  // Time calculations for days, hours, minutes and seconds
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-  // Display the result in the element with id="demo"
-  document.getElementById("demo").innerHTML =  hours + "h "
-  + minutes + "m " + seconds + "s ";
-
-  // If the count down is finished, write some text
-  if (distance < 0) {
-    clearInterval(x);
-    document.getElementById("demo").innerHTML = "EXPIRED";
-  }
-}, 1000);
-
-setTimeout(function () {
-       window.location.href = "upload"; //will redirect to your blog page (an ex: blog.html)
-    }, 5000); //will call the function after 2 secs.
-
+    // setTimeout(function () {
+    //        window.location.href = "upload"; //will redirect to your blog page (an ex: blog.html)
+    //     }, 5000); //will call the function after 2 secs.
 </script>
 <script type="text/javascript">
     $(window).on('load', function() {
@@ -126,6 +126,36 @@ setTimeout(function () {
         backdrop: 'static',
         keyboard: false
     });
+</script>
+
+<script>
+    function sleep(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
+    function getCount() {
+
+        $.ajax({
+                type: "GET",
+                url: "{{ route('get_status') }}"
+            })
+            .done(function(data) {
+                console.log(data);
+                if (data != 'null') {
+                    document.getElementById("meet").style.display = "block";
+                    document.getElementById("tab").style.display = "block";
+                    $('#meet').attr('href', data);
+                    sleep(10000).then(() => {
+
+                        window.location.href = "upload";
+                    });
+
+                }
+
+                setTimeout(getCount, 1000);
+            });
+    }
+    getCount()
 </script>
 
 </html>

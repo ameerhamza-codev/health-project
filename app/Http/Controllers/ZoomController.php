@@ -107,6 +107,19 @@ class ZoomController extends Controller
     }
     public function store(Request $request)
     {   
+        $todate = date('Y-m-d H:i:s');
+        $meeting_dates= ZoomMeetings::all();
+     
+        
+        foreach ($meeting_dates as $key) {
+            if(strtotime($key->start_time)<strtotime($todate)){
+                
+               ZoomMeetings::find($key->id)->delete();
+            }
+        }
+        
+
+
         $sms= new SMSController();
 
         $meeting=new ZoomMeetings();
@@ -123,11 +136,12 @@ class ZoomController extends Controller
 
         $meeting->url=$res['data']['join_url'];
         $meeting->start_url=$res['data']['start_url'];
+        $meeting->save();
         
         $sms->sendSMS($meeting->phone,$meeting->url,$meeting->start_time);
 
         
-        $meeting->save();
+        
 
         $url=$res['data']['join_url'];
 

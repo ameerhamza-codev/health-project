@@ -74,7 +74,7 @@ use App\passwrod_user;
                                 </tr>
                             </thead>
                             <tbody>
-                                @csrf
+                                
                                 @foreach($users as $user)
                                 <form action="{{ route('doctor.update')}}" id="edit-form" method="POST">
                                     @csrf

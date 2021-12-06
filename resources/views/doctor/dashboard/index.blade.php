@@ -7,10 +7,13 @@ use App\Patient;
 use App\CountryCode;
 use App\ZoomMeetings;
 
+$csvrecords = Patient::where('csv_date', '!=', null)->count();
+
 $meetings = ZoomMeetings::all();
 $code = CountryCode::all();
 $code2 = CountryCode::all();
-$patient = Patient::all();
+$patient = Patient::all()->sortByDesc('id');
+$patient2 = Patient::all();
 $paitentno = Patient::all()->count();
 $meetingsno = ZoomMeetings::all()->count();
 ?>
@@ -104,7 +107,7 @@ $meetingsno = ZoomMeetings::all()->count();
                         <span class="align-self-center mr-3 action-icon badge badge-secondary-inverse"><i class="feather icon-file-text"></i></span>
                         <div class="media-body">
                             <p class="mb-0">Generate CSV</p>
-                            <h5 class="mb-0">20 Records</h5>
+                            <h5 class="mb-0">{{$csvrecords}} Records</h5>
                         </div>
                     </div>
                 </div>
@@ -126,13 +129,7 @@ $meetingsno = ZoomMeetings::all()->count();
                             <h5 class="card-title mb-0">Patients Status</h5>
                         </div>
                         <div class="col-3">
-                            <div class="dropdown">
-                                <button class="btn btn-link p-0 font-18 float-right" type="button" id="widgetPatientStatus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="feather icon-more-horizontal-"></i></button>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="widgetPatientStatus">
-                                    <a class="dropdown-item font-13" href="#">Refresh</a>
-                                    <a class="dropdown-item font-13" href="#">Export</a>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -156,26 +153,92 @@ $meetingsno = ZoomMeetings::all()->count();
                             </thead>
                             <tbody>
 
-                                <form method="POST" action="{{ route('generateCSV') }}">
-                                    <tr>
+
+
+
+                                @foreach($patient as $patient)
+                                <tr>
+                                    <form method="POST" id="patient_form" action="{{ route('generateCSV') }}">
                                         @csrf
-                                        @foreach($patient as $patient)
                                         <input type="hidden" name="id" value="{{$patient->id}}">
+                                        <input type="hidden" name="generate" id="generate">
+
                                         <td>{{$patient->first_name}} {{$patient->last_name}}</td>
                                         <td>{{$patient->date_of_birth}}</td>
-                                        <td><button type="button" class="btn btn-danger px-5" disabled><i class="feather icon-x mr-2"></i>Fail</button></td>
-                                        <td> <button type="submit" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
-                                        <td></td>
-                                        <td>
-                                            <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px; max-height:50px"></a>
+                                        <!-- <td><button type="button" class="btn btn-danger px-5" disabled><i class="feather icon-x mr-2"></i>Fail</button></td> -->
 
+                                        <td>
+                                            <select class="select2-single form-control" name="test_status" required>
+                                                <optgroup>
+                                                    <option value="{{$patient->result}}" selected hidden> {{$patient->result}}</option>
+
+                                                    <option value="On Hold"><span class="btn-primary">On Hold</span></option>
+                                                    <option value="Fail"><span class="btn-danger">Fail</span></option>
+                                                    <option value="Success"><span class="btn-danger">Success</span></option>
+
+                                                </optgroup>
+                                            </select>
                                         </td>
-                                
+                                        <input type="hidden" name="imgfrontin" value="{{env('APP_URL').$patient->ID_back}}">
+                                        <td> <button type="button" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
+                                        <td>{{$patient->csv_date}}</td>
+                                        <td>
+                                            <!-- <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px; max-height:50px"></a> -->
+                                            <button type="button" value="{{env('APP_URL').$patient->ID_back}},{{env('APP_URL').$patient->ID_front}},{{env('APP_URL').$patient->test}}" id="modalbutton" class="btn btn-rounded btn-primary-rgba"><i class="feather icon-image"></i></button>
+                                        </td>
+                                        <td class="text-dark">
+                                            <button type="submit" name="submit" value="Save" class="btn btn-outline-success"><i class="feather icon-check"></i></button>
+                                        </td>
 
                                 </tr>
-                                @endforeach
 
                                 </form>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="ImageModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-center" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalCenterTitle">Images</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body" style="background-color: #F2F5FA;">
+
+                                                <div class="card-body">
+                                                    <ul class="nav nav-pills justify-content-center custom-tab-button mb-3" id="pills-tab-button" role="tablist">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active" id="pills-home-tab-button" data-toggle="pill" href="#pills-home-button" role="tab" aria-controls="pills-home-button" aria-selected="true"><span class="tab-btn-icon"></span>Test</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" id="pills-profile-tab-button" data-toggle="pill" href="#pills-profile-button" role="tab" aria-controls="pills-profile-button" aria-selected="false"><span class="tab-btn-icon"></span>ID Card</a>
+                                                        </li>
+
+                                                    </ul>
+                                                    <div class="tab-content" id="pills-tabContent-button" style="text-align: center;">
+                                                        <div class="tab-pane fade show active" id="pills-home-button" role="tabpanel" aria-labelledby="pills-home-tab-button">
+                                                            <img id="imgtest" style="max-width: 300px;" alt="">
+                                                        </div>
+                                                        <div class="tab-pane fade" id="pills-profile-button" role="tabpanel" aria-labelledby="pills-profile-tab-button">
+                                                            <h6>Front</h6>
+                                                            <img id="imgfront" style="max-width: 300px;" alt="">
+                                                            <h6>Back</h6>
+                                                            <img id="imgback" style="max-width: 300px;" alt="">
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+
+
                             </tbody>
                         </table>
                     </div>
@@ -232,7 +295,7 @@ $meetingsno = ZoomMeetings::all()->count();
                     </div>
                     <div class="modal-footer" style="background-color: #F2F5FA;">
                         <button type="submit" class="btn btn-secondary">Send To Patient</button>
-                        <button type="button" class="btn btn-primary">Add to Calender</button>
+                        <button type="submit" class="btn btn-primary">Add to Calender</button>
                     </div>
                     </form>
                 </div>
@@ -242,52 +305,9 @@ $meetingsno = ZoomMeetings::all()->count();
 
 
 
-        <!-- Modal -->
-        <div class="modal fade" id="ImageModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-center" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalCenterTitle">Images</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-
-                    <div class="modal-body" style="background-color: #F2F5FA;">
-
-                        <div class="card-body">
-                            <ul class="nav nav-pills justify-content-center custom-tab-button mb-3" id="pills-tab-button" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="pills-home-tab-button" data-toggle="pill" href="#pills-home-button" role="tab" aria-controls="pills-home-button" aria-selected="true"><span class="tab-btn-icon"></span>Test</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="pills-profile-tab-button" data-toggle="pill" href="#pills-profile-button" role="tab" aria-controls="pills-profile-button" aria-selected="false"><span class="tab-btn-icon"></span>ID Card</a>
-                                </li>
-
-                            </ul>
-                            <div class="tab-content" id="pills-tabContent-button" style="text-align: center;">
-                                <div class="tab-pane fade show active" id="pills-home-button" role="tabpanel" aria-labelledby="pills-home-tab-button">
-                                    <img src="https://www.citymd.com/media/1419/quest_result1000x792.jpg?width=100%&height=100%" style="max-width: 300px;" alt="">
-                                </div>
-                                <div class="tab-pane fade" id="pills-profile-button" role="tabpanel" aria-labelledby="pills-profile-tab-button">
-                                    <h6>Front</h6>
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/New_Austrian_ID_Card_%282021%29.png" style="max-width: 300px;" alt="">
-                                    <h6>Back</h6>
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/New_Austrian_ID_Card_%282021%29.png" style="max-width: 300px;" alt="">
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
 
 
-                </div>
-            </div>
-        </div>
-
-
-
-        <di v class="modal fade" id="CalModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="CalModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="card-body">
@@ -341,9 +361,36 @@ $meetingsno = ZoomMeetings::all()->count();
                     </div>
                 </div>
             </div>
-    </div>
-</div> <!-- End row -->
+        </div>
+    </div> <!-- End row -->
 </div>
+
+
+<div class="modal fade" id="event-details" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Meeting Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>Start time</h6>
+                <p id="p_time"></p>
+                <br>
+                <h6>Phone</h6>
+                <p id="p_phone"></p>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a id="p_url" target="_blank" class="btn btn-primary">Start Meeting Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <!-- End Contentbar -->
@@ -371,6 +418,24 @@ $meetingsno = ZoomMeetings::all()->count();
 <script src="{{ asset('assets/js/custom/custom-calender.js') }}"></script>
 
 <script>
+    $(document).on("click", "#modalbutton", function() {
+        var fields = $(this).attr('value').split(',');
+
+        $('#imgback').attr('src', "");
+        $('#imgback').attr('src', fields[0]);
+        $('#imgfront').attr('src', "");
+        $('#imgfront').attr('src', fields[1]);
+        $('#imgtest').attr('src', "");
+        $('#imgtest').attr('src', fields[2]);
+        $('#ImageModalCenter').modal('show');
+    });
+
+    function submit_rec() {
+
+        document.getElementById("generate").value = 0;
+        document.getElementById("patient_form").submit();
+
+    }
     $('#calendarFull').fullCalendar({
         header: {
             left: 'prev,next today',
@@ -379,6 +444,16 @@ $meetingsno = ZoomMeetings::all()->count();
         },
         defaultView: 'month',
         editable: true,
+        eventpicker: true,
+        eventdragon: false,
+        eventClick: function(event, jsEvent, view) {
+            
+            $('#event-details').modal('show');
+            document.getElementById("p_phone").innerHTML = event.phone;
+            document.getElementById("p_time").innerHTML = (event.date);
+            document.getElementById("p_url").href = event.ev_url;
+           
+        },
         eventSources: [{
             events: [{
 
@@ -408,7 +483,12 @@ $meetingsno = ZoomMeetings::all()->count();
     });
 
     $(document).ready(function() {
+
+
+
+
         var sites = @json($meetings);
+        
 
         for (i in sites) {
 
@@ -422,10 +502,14 @@ $meetingsno = ZoomMeetings::all()->count();
 
 
             date = date.replace(/\//g, '-');
-
+            
+            
             $('#calendarFull').fullCalendar('renderEvent', {
                 title: "Appointment with " + ' ' + sites[i].phone,
                 start: date,
+                phone: sites[i].phone,
+                date : sites[i].start_time,
+                ev_url: sites[i].start_url,
 
             }, true);
         }

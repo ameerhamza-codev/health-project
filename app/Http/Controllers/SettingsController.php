@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Hash;
 use App\passwrod_user;
 use Illuminate\Support\Facades\Auth;
 use App\Patient;
+use Carbon\Carbon;
+use App\Http\Controllers\ZoomController;
+use GuzzleHttp\Promise\Create;
+use App\ZoomMeetings;
+use Illuminate\Support\Facades\Redirect;
+use GuzzleHttp\Client;
 
 class SettingsController extends Controller
 {
@@ -75,10 +81,18 @@ class SettingsController extends Controller
     public function generateCSV(Request $request){
         
         $user = Patient::find($request->id);
+        $user->test_no ='1';
+        $user->result=$request->test_status;
+        $user->csv_date=Carbon::now();
+        $user->save();
+        if($request->submit == "Save"){
+            return redirect()->back();
+         
+        }else{
         $data = [];
-        $data[] = array('First Name','Last Name','Date of Birth', 'Email','Phone', 'Address');
-       
-        $data[] = array($user->first_name, $user->last_name, $user->date_of_birth,$user->email, $user->phone, $user->address);
+        $data[] = array('First Name','Last Name','Date of Birth', 'Email','Phone', 'Address','Test No','Test Status','CSV Date');
+        
+        $data[] = array($user->first_name, $user->last_name, $user->date_of_birth,$user->email, $user->phone, $user->address, $user->test_no, $user->test_status, $user->csv_date);
         
         $fileName = $user->first_name.'.csv';
         $filePath = public_path($fileName);
@@ -88,6 +102,7 @@ class SettingsController extends Controller
         }
         fclose($file);
         return response()->download($filePath);
+    }
     }
 
     public function bulkCSV(){
@@ -105,6 +120,31 @@ class SettingsController extends Controller
             fputcsv($file, $line);
         }
         fclose($file);
+        
         return response()->download($filePath);
+    }
+
+    public function set(Request $request){
+        $meeting=new ZoomMeetings();
+        
+        $meeting->start_time=Carbon::now();
+        
+        $user = Patient::find($request->id);
+        $meeting->phone=$user->phone;
+        $meeting->topic="Doctor Appointment";
+      
+        $mm= new ZoomController();
+        $res=$mm->create([ 'topic'      => "Doctor Appointment",
+        'start_time' => Carbon::now(),
+        'host_video' => 1,
+        'participant_video' => 1,]);
+        
+        $meeting->url=$res['data']['join_url'];
+        $meeting->start_url=$res['data']['start_url'];
+        $meeting->save();
+        $user->test_status=$meeting->id;
+      
+        $user->save();
+        return Redirect::away($res['data']['start_url']);
     }
 }

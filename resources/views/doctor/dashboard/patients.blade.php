@@ -8,7 +8,7 @@ Datatable
 
 use App\Patient;
 
-$patient = Patient::all();
+$patient = Patient::all()->sortByDesc('id');
 ?>
 @section('style')
 <!-- DataTables css -->
@@ -30,7 +30,7 @@ $patient = Patient::all();
         </div>
         <div class="col-md-6 col-lg-6">
             <div class="widgetbar">
-                <a href="{{route('bulk-generate')}}" class="btn btn-primary"  ><i class="feather icon-file mr-2"></i>Bulk Generate CSV</a>
+                <a href="{{route('bulk-generate')}}" class="btn btn-primary"><i class="feather icon-file mr-2"></i>Bulk Generate CSV</a>
             </div>
         </div>
     </div>
@@ -49,14 +49,14 @@ $patient = Patient::all();
 
                                 <thead>
                                     <tr>
-                                        
+
                                         <th>Name</th>
                                         <th>Phone Number</th>
                                         <th>Email</th>
                                         <th>Date of Birth</th>
                                         <th>Result</th>
                                         <th>Generate CSV</th>
-                                        
+
                                         <th></th>
                                     </tr>
 
@@ -68,26 +68,78 @@ $patient = Patient::all();
                                             @csrf
 
 
-                                            
+
 
                                             <td class="text-dark">{{$patient->first_name}} {{$patient->last_name}}</td>
                                             <td class="text-dark">{{$patient->phone}}</td>
                                             <td class="text-dark">{{$patient->email}}</td>
                                             <td class="text-dark">{{$patient->date_of_birth}}</td>
-                                            <td class="text-dark"><button type="button" class="btn btn-success" style="padding-inline: 33px;" disabled><i class="feather icon-check mr-2"></i>Success</button></td>
+                                            @if($patient->result != null)
+                                            <td class="text-dark"><button type="button" class="btn btn-warning" style=" width: 100px;" disabled>{{$patient->result}}</button></td>
+                                            @else
+                                            <td></td>
+                                            @endif
                                             <td class="text-dark"><button type="submit" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
 
-                                            <td class="text-dark">
-                                                <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px;"></a>
+                                            <td>
+                                                <!-- <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px; max-height:50px"></a> -->
+                                                <button type="button" value="{{env('APP_URL').$patient->ID_back}},{{env('APP_URL').$patient->ID_front}},{{env('APP_URL').$patient->test}}" id="modalbutton" class="btn btn-rounded btn-primary-rgba"><i class="feather icon-image"></i></button>
                                             </td>
                                             <td><input type="hidden" name="id" value="{{$patient->id}}"></td>
-                                            </form>
+                                        </form>
+
+
+
                                     </tr>
+
                                     
+                                <!-- Modal -->
+                                <div class="modal fade" id="ImageModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-center" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalCenterTitle">Images</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body" style="background-color: #F2F5FA;">
+
+                                                <div class="card-body">
+                                                    <ul class="nav nav-pills justify-content-center custom-tab-button mb-3" id="pills-tab-button" role="tablist">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active" id="pills-home-tab-button" data-toggle="pill" href="#pills-home-button" role="tab" aria-controls="pills-home-button" aria-selected="true"><span class="tab-btn-icon"></span>Test</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" id="pills-profile-tab-button" data-toggle="pill" href="#pills-profile-button" role="tab" aria-controls="pills-profile-button" aria-selected="false"><span class="tab-btn-icon"></span>ID Card</a>
+                                                        </li>
+
+                                                    </ul>
+                                                    <div class="tab-content" id="pills-tabContent-button" style="text-align: center;">
+                                                        <div class="tab-pane fade show active" id="pills-home-button" role="tabpanel" aria-labelledby="pills-home-tab-button">
+                                                            <img id="imgtest" style="max-width: 300px;" alt="">
+                                                        </div>
+                                                        <div class="tab-pane fade" id="pills-profile-button" role="tabpanel" aria-labelledby="pills-profile-tab-button">
+                                                            <h6>Front</h6>
+                                                            <img id="imgfront" style="max-width: 300px;" alt="">
+                                                            <h6>Back</h6>
+                                                            <img id="imgback" style="max-width: 300px;" alt="">
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
                                     @endforeach
 
                                 </tbody>
-                               
+
                             </table>
                         </div>
                     </div>
@@ -108,6 +160,20 @@ $patient = Patient::all();
     <!-- End Contentbar -->
     @endsection
     @section('script')
+    <script>
+         $(document).on("click", "#modalbutton", function() {
+        var fields = $(this).attr('value').split(',');
+
+        $('#imgback').attr('src', "");
+        $('#imgback').attr('src', fields[0]);
+        $('#imgfront').attr('src', "");
+        $('#imgfront').attr('src', fields[1]);
+        $('#imgtest').attr('src', "");
+        $('#imgtest').attr('src', fields[2]);
+        $('#ImageModalCenter').modal('show');
+    });
+
+    </script>
     <!-- Datatable js -->
     <script src="{{ asset('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
