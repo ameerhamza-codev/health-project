@@ -18,8 +18,8 @@ class PatientController extends Controller
 
     {
         $code = CountryCode::all();
-
-        return view('patient.index', compact('code'));
+        $patients = Patient::all();
+        return view('patient.index', compact('code', 'patients'));
     }
 
     public function store(Request $request)
@@ -31,11 +31,22 @@ class PatientController extends Controller
         $patient->email = $request->email;
         $patient->phone = $request->code . $request->phone;
         $patient->address = $request->address;
-        $patient->date_of_birth = $request->dob;
+        if($request->dob ==null){
+            $patient->date_of_birth = $request->dob1;
+        }
+        else{
+            $patient->date_of_birth = $request->dob;
+        }
 
         $patient->save();
         Session(['patient' => $patient->id]);
         return view('patient.timer');
+    }
+
+    public function get_patient(Request $request)
+    {
+        $patient = Patient::find($request->pat);
+        return response()->json($patient);
     }
 
     public function status()

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use App\ZoomMeetings;
 use App\Http\Controllers\SMSController;
 use Illuminate\Support\Facades\Auth;
+use PhpParser\NodeVisitor\FirstFindingVisitor;
+use Twilio\Page;
 
 class ZoomController extends Controller
 {
@@ -45,7 +47,7 @@ class ZoomController extends Controller
         return \Firebase\JWT\JWT::encode($payload, $secret, 'HS256');
     }
 
-    private function retrieveZoomUrl()
+    public function retrieveZoomUrl()
     {
         return env('ZOOM_API_URL', '');
     }
@@ -96,7 +98,35 @@ class ZoomController extends Controller
     public function index()
     {
         if(Auth::check()){
+           
+        $path = 'users/me/meetings?page_size=300';
+        $url = $this->retrieveZoomUrl();
+        $body = [
+            'headers' => $this->headers,
+            "page_size"=>100,
+        ];
+        $response =  $this->client->get($url.$path, $body);
+        
+        $data = json_decode($response->getBody(), true);
+        $r=[];
+        $count=0;
+        for($i=0;$i<count($data['meetings']);$i++){
 
+            if(strpos($data['meetings'][$i]['topic'],env('MEETING_NAME', '')) !== false){
+               
+                $r=array_add($r,$count,$data['meetings'][$i]);
+                $count++;
+             
+            }
+
+        }
+       
+        
+        $name=str_replace(': Event_by_Calendly','',$r['1']['topic']);
+        dd($r);
+      
+        
+        
             
         $zoom= ZoomMeetings::all();
         return view('zoom.index',compact('zoom'));

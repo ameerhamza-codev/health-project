@@ -5,6 +5,7 @@
 
 use App\Patient;
 use App\CountryCode;
+use App\Http\Controllers\ZoomController;
 use App\ZoomMeetings;
 
 $csvrecords = Patient::where('csv_date', '!=', null)->count();
@@ -16,6 +17,34 @@ $patient = Patient::all()->sortByDesc('id');
 $patient2 = Patient::all();
 $paitentno = Patient::all()->count();
 $meetingsno = ZoomMeetings::all()->count();
+
+
+$zmc = new ZoomController();
+$path = 'users/me/meetings?page_size=300';
+
+$url = $zmc->retrieveZoomUrl();
+$body = [
+    'headers' => $zmc->headers,
+    "page_size" => 100,
+];
+$response =  $zmc->client->get($url . $path, $body);
+$data = json_decode($response->getBody(), true);
+$r = [];
+$count = 0;
+for ($i = 0; $i < count($data['meetings']); $i++) {
+
+    if (strpos($data['meetings'][$i]['topic'], env('MEETING_NAME', '')) !== false) {
+
+        $r = array_add($r, $count, $data['meetings'][$i]);
+        $count++;
+    }
+}
+
+
+//$name = str_replace(': Event_by_Calendly', '', $r['1']['topic']);
+
+
+
 ?>
 <style>
     .datepicker {
@@ -180,7 +209,7 @@ $meetingsno = ZoomMeetings::all()->count();
                                             </select>
                                         </td>
                                         <input type="hidden" name="imgfrontin" value="{{env('APP_URL').$patient->ID_back}}">
-                                        <td> <button type="button" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
+                                        <td> <button type="submit" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
                                         <td>{{$patient->csv_date}}</td>
                                         <td>
                                             <!-- <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px; max-height:50px"></a> -->
@@ -379,7 +408,7 @@ $meetingsno = ZoomMeetings::all()->count();
                 <h6>Start time</h6>
                 <p id="p_time"></p>
                 <br>
-                <h6>Phone</h6>
+                <h6 id="p_phonehad">Phone</h6>
                 <p id="p_phone"></p>
                 <br>
             </div>
@@ -447,12 +476,18 @@ $meetingsno = ZoomMeetings::all()->count();
         eventpicker: true,
         eventdragon: false,
         eventClick: function(event, jsEvent, view) {
-            
+
             $('#event-details').modal('show');
-            document.getElementById("p_phone").innerHTML = event.phone;
+            if(event.phone!=null){
+                document.getElementById("p_phone").innerHTML = event.phone;
+            }else{
+                document.getElementById("p_phonehad").innerHTML = "Name";
+                document.getElementById("p_phone").innerHTML = event.name;
+            }
+            
             document.getElementById("p_time").innerHTML = (event.date);
             document.getElementById("p_url").href = event.ev_url;
-           
+
         },
         eventSources: [{
             events: [{
@@ -488,33 +523,41 @@ $meetingsno = ZoomMeetings::all()->count();
 
 
         var sites = @json($meetings);
-        
+        var calendly=@json($r);
+        //console.log(calendly[0]['start_time']);
+
+        for (i in calendly){
+            date=calendly[i]['start_time'];
+            console.log("{{env('MEETING_NAME', '')}}");
+            name = calendly[i]['topic'].replace(": {{env('MEETING_NAME', '')}}","");
+            console.log(name);
+            $('#calendarFull').fullCalendar('renderEvent', {
+                title: 'Calendly Meeting',
+                start: date,
+                name:name,
+                date: date,
+                ev_url: calendly[i]['join_url'],
+                allDay: true
+            }, true);
+        }
 
         for (i in sites) {
-
-
             date = sites[i].start_time;
             if (!(date.includes("T"))) {
                 date = date.substring(0, 10) + 'T' + date.substring(10 + 1);
 
             }
             date = date.replace(/ /g, "");
-
-
             date = date.replace(/\//g, '-');
-            
-            
             $('#calendarFull').fullCalendar('renderEvent', {
                 title: "Appointment with " + ' ' + sites[i].phone,
                 start: date,
                 phone: sites[i].phone,
-                date : sites[i].start_time,
+                date: sites[i].start_time,
                 ev_url: sites[i].start_url,
 
             }, true);
         }
-
-
 
     });
 </script>

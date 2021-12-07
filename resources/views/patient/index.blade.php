@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -25,6 +26,8 @@
     <link href="{{ asset('assets/css/icons.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/flag-icon.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('assets/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
+
     <!-- End CSS -->
 </head>
 
@@ -43,54 +46,79 @@
                     <br>
 
                     <h5 style="text-align: center;">Please Fill This Form</h5>
-                   
+
                     <br>
                     <div class="card-body">
-                    <form action="{{ route('patient.store') }}" method="POST">
-                        @csrf
-                        <div class="input-group">
-                       
-                            <input type="text" class="form-control" placeholder="First Name" name="fname" required />
-                            <span class="input-group-addon"></span>
-                            <input type="text" class="form-control" placeholder="Last Name" name="lname" required/>
-                        </div>
-                        <br>
-                        <div class="input-group">
-                            <input type="text" id="autoclose-date" name="dob" class="datepicker-here form-control" required placeholder="Date of Birth" aria-describedby="basic-addon3" />
-                            <div class="input-group-append">
-                                <span class="input-group-text" id="basic-addon3"><i class="feather icon-calendar"></i></span>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="form-group mb-0">
-                            <input type="email"  required class="form-control" name="email" name="inputEmail" id="inputEmail" placeholder="Email">
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <select class="select2-single form-control" required name="code">
-                                    <optgroup>
-                                        @foreach($code as $code)
-                                        <option value="{{$code->country_code}}">{{$code->country_name}} +{{$code->country_code}}</option>
-                                        @endforeach
-                                    </optgroup>
+                        <form action="{{ route('patient.store') }}" method="POST">
+                            @csrf
 
-                                </select>
-                            </div>
-                            <div class="col-lg-8">
-                                <input type="tel" class="form-control" required name="phone" placeholder="Phone" />
-                            </div>
-                        </div>
 
-                        <br>
-                        <div class="form-group">
-                            <textarea class="form-control" required name="address" id="inputTextarea" rows="3" placeholder="Adress"></textarea>
-                        </div>
+
+                            <select class="select2-single form-control" id="pat" onChange="updateinput();" name="pat">
+                                <optgroup>
+                                    <option value="" disabled selected hidden>Already a Patient</option>
+                                    @foreach($patients->unique('email') as $pat)
+                                    <option value="{{$pat->id}}">{{$pat->first_name}} {{$pat->last_name}} ({{$pat->email}}) </option>
+                                    @endforeach
+                                </optgroup>
+
+                            </select>
+
+                            <br>
+
+                            <div class="input-group">
+
+                                <input type="text" class="form-control" placeholder="First Name" name="fname" id="fname" required />
+                                <span class="input-group-addon"></span>
+                                <input type="text" class="form-control" placeholder="Last Name" name="lname" id="lname" required />
+                            </div>
+                            <br>
+                            <input type="text" hidden class="form-control" name="dob1" id="date_input" />
+
+                            <div class="input-group">
+                                <input type="text" id="autoclose-date" name="dob" class="datepicker-here form-control" placeholder="Date of Birth" aria-describedby="basic-addon3" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon3"><i class="feather icon-calendar"></i></span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-group mb-0">
+                                <input type="email" required class="form-control" name="email" id="email" placeholder="Email">
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <select class="select2-single form-control" id="code" required name="code">
+                                        <optgroup>
+                                            @foreach($code as $code)
+                                            <option value="{{$code->country_code}}">{{$code->country_name}} +{{$code->country_code}}</option>
+                                            @endforeach
+                                        </optgroup>
+
+                                    </select>
+                                </div>
+                                <div class="col-lg-8">
+                                    <input type="tel" class="form-control" required id="phone" name="phone" placeholder="Phone" />
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="form-group">
+                                <textarea class="form-control" required id="address" name="address" id="inputTextarea" rows="3" placeholder="Address"></textarea>
+                            </div>
+                           
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitch2" required>
+                                <label class="custom-control-label" for="customSwitch2">I Accept the Terms and Conditions</label>
+                            </div>
+                          
                     </div>
                     <div class="modal-footer" style="background-color: #F2F5FA;">
-                       <button type="submit" class="btn btn-primary btn-lg btn-block font-18">Proceed</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block font-18">Proceed</button>
 
                     </div>
+
+
 
                     </form>
 
@@ -114,7 +142,10 @@
         <script src="{{ asset('assets/plugins/switchery/switchery.min.js') }}"></script>
         <script src="{{ asset('assets/plugins/bootstrap-inputmask/jquery.inputmask.bundle.min.js') }}"></script>
         <script src="{{ asset('assets/js/custom/custom-form-inputmask.js') }}"></script>
+        <script src="{{ asset('assets/plugins/select2/select2.min.js') }}"></script>
+
         @yield('script')
+
         <!-- Core JS -->
         <script src="{{ asset('assets/js/core.js') }}"></script>
         <!-- End JS -->
@@ -129,6 +160,47 @@
         backdrop: 'static',
         keyboard: false
     });
+
+    function updateinput() {
+        var pat = ($('#pat').val());
+        $.ajax({
+            type: "POST",
+            url: "{{ route('get_patient') }}",
+            data: {
+                '_token': $('input[name=_token]').val(),
+                'pat': pat
+            },
+
+        }).done(function(data) {
+            $('#fname').val(data.first_name);
+            $('#lname').val(data.last_name);
+            $('#autoclose-date').val(data.date_of_birth);
+            $('#autoclose-date').datepicker('update', data.date_of_birth);
+
+            $("#date_input").val(data.date_of_birth);
+            $('#autoclose-date').attr('placeholder', data.date_of_birth);
+            $('#email').val(data.email);
+            $('#address').val(data.address);
+            phone = ""
+            code = ""
+            for ($i = 0; $i < data.phone.length; $i++) {
+                if ($i < 2) {
+                    code += data.phone[$i];
+
+
+                } else {
+                    phone += data.phone[$i];
+
+                }
+            }
+
+            $('#code').val(code);
+            console.log($('#code').val() == code);
+            $('#phone').val(phone);
+
+        });
+
+    }
 </script>
 
 </html>
