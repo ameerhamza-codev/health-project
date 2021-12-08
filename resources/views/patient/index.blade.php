@@ -49,11 +49,10 @@
 
                     <br>
                     <div class="card-body">
+                        
+                    <div id="google_translate_element"></div>
                         <form action="{{ route('patient.store') }}" method="POST">
                             @csrf
-
-
-
                             <select class="select2-single form-control" id="pat" onChange="updateinput();" name="pat">
                                 <optgroup>
                                     <option value="" disabled selected hidden>Already a Patient</option>
@@ -73,14 +72,11 @@
                                 <input type="text" class="form-control" placeholder="Last Name" name="lname" id="lname" required />
                             </div>
                             <br>
-                            <input type="text" hidden class="form-control" name="dob1" id="date_input" />
 
-                            <div class="input-group">
-                                <input type="text" id="autoclose-date" name="dob" class="datepicker-here form-control" placeholder="Date of Birth" aria-describedby="basic-addon3" />
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="basic-addon3"><i class="feather icon-calendar"></i></span>
-                                </div>
-                            </div>
+                            <label >Enter Date of Birth in Required Format </label>
+                            <input type="text" placeholder="dd.MM.YYYY" required class="form-control" name="dob" id="date_input" />
+
+                            
                             <br>
                             <div class="form-group mb-0">
                                 <input type="email" required class="form-control" name="email" id="email" placeholder="Email">
@@ -103,9 +99,7 @@
                             </div>
 
                             <br>
-                            <div class="form-group">
-                                <textarea class="form-control" required id="address" name="address" id="inputTextarea" rows="3" placeholder="Address"></textarea>
-                            </div>
+                            
                            
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="customSwitch2" required>
@@ -150,6 +144,12 @@
         <script src="{{ asset('assets/js/core.js') }}"></script>
         <!-- End JS -->
 </body>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+}
+</script>
 
 <script type="text/javascript">
     $(window).on('load', function() {
@@ -178,7 +178,6 @@
             $('#autoclose-date').datepicker('update', data.date_of_birth);
 
             $("#date_input").val(data.date_of_birth);
-            $('#autoclose-date').attr('placeholder', data.date_of_birth);
             $('#email').val(data.email);
             $('#address').val(data.address);
             phone = ""

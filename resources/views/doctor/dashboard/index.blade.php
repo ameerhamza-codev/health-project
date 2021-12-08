@@ -173,6 +173,7 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                                     <th>Result</th>
                                     <th>Generate CSV</th>
                                     <th>CSV Generated</th>
+                                    <th>Performed By</th>
                                     <th>Tests</th>
                                     <th>
 
@@ -211,6 +212,7 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                                         <input type="hidden" name="imgfrontin" value="{{env('APP_URL').$patient->ID_back}}">
                                         <td> <button type="submit" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
                                         <td>{{$patient->csv_date}}</td>
+                                        <td>{{$patient->performed_by}}</td>
                                         <td>
                                             <!-- <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px; max-height:50px"></a> -->
                                             <button type="button" value="{{env('APP_URL').$patient->ID_back}},{{env('APP_URL').$patient->ID_front}},{{env('APP_URL').$patient->test}}" id="modalbutton" class="btn btn-rounded btn-primary-rgba"><i class="feather icon-image"></i></button>
@@ -291,12 +293,24 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                     <div class="modal-body" style="background-color: #F2F5FA;">
                         <form action="{{route('zoom.store')}}" method="POST">
                             @csrf
+
+                            <select class="select2-single form-control" id="pat" onChange="updateinput();" name="pat">
+                                <optgroup>
+                                    <option value="" disabled selected hidden>Select Already Registered Patient</option>
+                                    @foreach($patient2->unique('email') as $pat)
+                                    <option value="{{$pat->id}}">{{$pat->first_name}} {{$pat->last_name}} ({{$pat->email}}) </option>
+                                    @endforeach
+                                </optgroup>
+
+                            </select>
+                            <br>
+
                             <div class="form-group mb-0">
                                 <h6>Phone</h6>
                                 <div class="row">
 
                                     <div class="col-lg-4">
-                                        <select class="select2-single form-control" name="code" required>
+                                        <select class="select2-single form-control" id="code" name="code" required>
                                             <optgroup>
                                                 @foreach($code as $code)
                                                 <option value="{{$code->country_code}}">{{$code->country_name}} +{{$code->country_code}}</option>
@@ -306,7 +320,7 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                                         </select>
                                     </div>
                                     <div class="col-lg-8">
-                                        <input type="tel" class="form-control" placeholder="Phone" required name="phone" />
+                                        <input type="tel" class="form-control" id="phone" placeholder="Phone" required name="phone" />
                                     </div>
                                 </div>
                             </div>
@@ -354,9 +368,26 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                                         @csrf
                                         <div class="modal-body">
                                             <form name="save-event">
+                                                <div class="form-group">
+                                                    <select class="select2-single form-control" id="pat2" onChange="updateinput();" name="pat">
+                                                        <optgroup>
+                                                            <option value="" disabled selected hidden>Select Already Registered Patient</option>
+                                                            @foreach($patient2->unique('email') as $pat)
+                                                            <option value="{{$pat->id}}">{{$pat->first_name}} {{$pat->last_name}} ({{$pat->email}}) </option>
+                                                            @endforeach
+                                                        </optgroup>
+
+                                                    </select>
+
+                                                </div>
                                                 <div class="row">
+
+
+
                                                     <div class="col-lg-4">
-                                                        <select class="select2-single form-control" id="ev_code" name="code" required>
+
+
+                                                        <select class="select2-single form-control" id="code2" name="code" required>
                                                             <optgroup>
                                                                 @foreach($code2 as $code)
                                                                 <option value="{{$code->country_code}}">{{$code->country_name}} +{{$code->country_code}}</option>
@@ -366,7 +397,7 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                                                         </select>
                                                     </div>
                                                     <div class="col-lg-8">
-                                                        <input type="tel" class="form-control" id="ev_tel" name="phone" placeholder="Phone" required />
+                                                        <input type="tel" class="form-control" id="phone2" name="phone" placeholder="Phone" required />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -405,17 +436,26 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                 </button>
             </div>
             <div class="modal-body">
-                <h6>Start time</h6>
-                <p id="p_time"></p>
-                <br>
-                <h6 id="p_phonehad">Phone</h6>
-                <p id="p_phone"></p>
-                <br>
+                <form action="{{route('meeting.update')}}" method="POST">
+                    @csrf
+                    <h6>Start time</h6>
+                    <input type="text" id="p_time2" name="time2" class="form-control" />
+                    <input type="text" id="p_time" name="time" hidden class="form-control" />
+                    <input type="hidden" id="p_id" name="phone" />
+
+
+                    <br>
+                    <h6 id="p_phonehad">Phone</h6>
+                    <p id="p_phone"></p>
+                    <br>
             </div>
             <div class="modal-footer">
+                <button type="submit" class="btn btn-success" >Save Changes</button>
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <a id="p_url" target="_blank" class="btn btn-primary">Start Meeting Now</a>
             </div>
+            </form>
         </div>
     </div>
 </div>
@@ -447,6 +487,50 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
 <script src="{{ asset('assets/js/custom/custom-calender.js') }}"></script>
 
 <script>
+    function updateinput() {
+        var pat = ($('#pat').val());
+        if (pat == null) {
+            var pat = ($('#pat2').val());
+        }
+        console.log(pat);
+        $.ajax({
+            type: "POST",
+            url: "{{ route('get_patient') }}",
+            data: {
+                '_token': $('input[name=_token]').val(),
+                'pat': pat
+            },
+
+        }).done(function(data) {
+
+
+            phone = ""
+            code = ""
+            for ($i = 0; $i < data.phone.length; $i++) {
+                if ($i < 2) {
+                    code += data.phone[$i];
+
+
+                } else {
+                    phone += data.phone[$i];
+
+                }
+            }
+
+            $('#code').val(code);
+            console.log($('#code').val() == code);
+            $('#phone').val(phone);
+
+            $('#code2').val(code);
+            console.log($('#code').val() == code);
+            $('#phone2').val(phone);
+            
+            console.log(data.id);
+            $('#zoomid').val(data.id);
+
+        });
+
+    }
     $(document).on("click", "#modalbutton", function() {
         var fields = $(this).attr('value').split(',');
 
@@ -478,15 +562,20 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
         eventClick: function(event, jsEvent, view) {
 
             $('#event-details').modal('show');
-            if(event.phone!=null){
+            if (event.phone != null) {
                 document.getElementById("p_phone").innerHTML = event.phone;
-            }else{
+            } else {
                 document.getElementById("p_phonehad").innerHTML = "Name";
                 document.getElementById("p_phone").innerHTML = event.name;
             }
+
+            document.getElementById("p_time").value = (event.date);
+            document.getElementById("p_time2").value = (event.date);
             
-            document.getElementById("p_time").innerHTML = (event.date);
+            document.getElementById("p_id").value = (event.phone);
+            
             document.getElementById("p_url").href = event.ev_url;
+
 
         },
         eventSources: [{
@@ -523,18 +612,18 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
 
 
         var sites = @json($meetings);
-        var calendly=@json($r);
+        var calendly = @json($r);
         //console.log(calendly[0]['start_time']);
 
-        for (i in calendly){
-            date=calendly[i]['start_time'];
+        for (i in calendly) {
+            date = calendly[i]['start_time'];
             console.log("{{env('MEETING_NAME', '')}}");
-            name = calendly[i]['topic'].replace(": {{env('MEETING_NAME', '')}}","");
+            name = calendly[i]['topic'].replace(": {{env('MEETING_NAME', '')}}", "");
             console.log(name);
             $('#calendarFull').fullCalendar('renderEvent', {
                 title: 'Calendly Meeting',
                 start: date,
-                name:name,
+                name: name,
                 date: date,
                 ev_url: calendly[i]['join_url'],
                 allDay: true

@@ -55,6 +55,8 @@ $patient = Patient::all()->sortByDesc('id');
                                         <th>Email</th>
                                         <th>Date of Birth</th>
                                         <th>Result</th>
+                                        
+                                        <th>Performed By</th>
                                         <th>Generate CSV</th>
 
                                         <th></th>
@@ -79,8 +81,9 @@ $patient = Patient::all()->sortByDesc('id');
                                             @else
                                             <td></td>
                                             @endif
+                                            <td class="text-dark">{{$patient->performed_by}}</td>
                                             <td class="text-dark"><button type="submit" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
-
+                                            
                                             <td>
                                                 <!-- <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px; max-height:50px"></a> -->
                                                 <button type="button" value="{{env('APP_URL').$patient->ID_back}},{{env('APP_URL').$patient->ID_front}},{{env('APP_URL').$patient->test}}" id="modalbutton" class="btn btn-rounded btn-primary-rgba"><i class="feather icon-image"></i></button>

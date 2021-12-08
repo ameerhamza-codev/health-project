@@ -97,34 +97,36 @@ class ZoomController extends Controller
 
     public function index()
     {
+        //return redirect()->away("https://us04web.zoom.us/wc/join/73561262755?pwd=czAycTJQZVF1RXA2QmxjMExFYWFhUT09");
+        
         if(Auth::check()){
            
-        $path = 'users/me/meetings?page_size=300';
-        $url = $this->retrieveZoomUrl();
-        $body = [
-            'headers' => $this->headers,
-            "page_size"=>100,
-        ];
-        $response =  $this->client->get($url.$path, $body);
+        // $path = 'users/me/meetings?page_size=300';
+        // $url = $this->retrieveZoomUrl();
+        // $body = [
+        //     'headers' => $this->headers,
+        //     "page_size"=>100,
+        // ];
+        // $response =  $this->client->get($url.$path, $body);
         
-        $data = json_decode($response->getBody(), true);
-        $r=[];
-        $count=0;
-        for($i=0;$i<count($data['meetings']);$i++){
+        
+        // $data = json_decode($response->getBody(), true);
+        // $r=[];
+        // $count=0;
+        // for($i=0;$i<count($data['meetings']);$i++){
 
-            if(strpos($data['meetings'][$i]['topic'],env('MEETING_NAME', '')) !== false){
+        //     if(strpos($data['meetings'][$i]['topic'],env('MEETING_NAME', '')) !== false){
                
-                $r=array_add($r,$count,$data['meetings'][$i]);
-                $count++;
+        //         $r=array_add($r,$count,$data['meetings'][$i]);
+        //         $count++;
              
-            }
+        //     }
 
-        }
+        // }
+        
+       
        
         
-        $name=str_replace(': Event_by_Calendly','',$r['1']['topic']);
-        dd($r);
-      
         
         
             
@@ -134,6 +136,20 @@ class ZoomController extends Controller
             return redirect('/');
         }
         
+
+    }
+
+    public function update(Request $request)
+    {
+        $matchThese = ['start_time' => $request->time, 'phone' => $request->phone];
+        $zoom2= ZoomMeetings::where($matchThese)->get();
+        //$zoom2= ZoomMeetings::where('start_time','=',$request->time)->get();
+        
+        $id=($zoom2[0]->id);
+        $upzoom= ZoomMeetings::find($id);
+        $upzoom->start_time=$request->time2;
+        $upzoom->save();
+        return redirect()->back();
     }
     public function store(Request $request)
     {   

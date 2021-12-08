@@ -14,20 +14,11 @@
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
     <!-- Start CSS -->
     @yield('style')
-    <style>
-        .datepicker {
-            z-index: 99999 !important;
-        }
+   
     </style>
-    <link href="{{ asset('assets/plugins/sweet-alert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
-
-    <link href="{{ asset('assets/plugins/dropzone/dist/dropzone.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('assets/plugins/datepicker/datepicker.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('assets/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/icons.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/flag-icon.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/files.css') }}" rel="stylesheet" type="text/css">
     <!-- End CSS -->
 </head>
@@ -82,7 +73,7 @@
                                     <h6>Front</h6>
                                     <div class="form-group files color">
                                         <label>Upload Your File </label>
-                                        <input type="file" name="IDFront" class="form-control" multiple="">
+                                        <input type="file" name="IDFront" class="form-control"  multiple="">
                                     </div>
                                     <br>
                                     <h6>Back</h6>
@@ -121,21 +112,9 @@
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/popper.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/js/modernizr.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datepicker/datepicker.min.js') }}"></script>
-    <script src="{{ asset('assets/js/bootstrap-clockpicker.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/sweet-alert2/sweetalert2.min.js') }}"></script>
-    <script src="{{ asset('assets/js/custom/custom-sweet-alert.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datepicker/i18n/datepicker.en.js') }}"></script>
-    <script src="{{ asset('assets/js/custom/custom-form-datepicker.js') }}"></script>
-    <script src="{{ asset('assets/js/detect.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.slimscroll.js') }}"></script>
-    <script src="{{ asset('assets/js/vertical-menu.js') }}"></script>
-    <script src="{{ asset('assets/plugins/switchery/switchery.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/bootstrap-inputmask/jquery.inputmask.bundle.min.js') }}"></script>
+    
     <script src="{{ asset('assets/js/custom/custom-form-inputmask.js') }}"></script>
 
-    <script src="{{ asset('assets/plugins/dropzone/dist/dropzone.js') }}"></script>
     @yield('script')
     <!-- Core JS -->
     <script src="{{ asset('assets/js/core.js') }}"></script>

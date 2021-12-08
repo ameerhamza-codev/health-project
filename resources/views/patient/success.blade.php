@@ -50,7 +50,7 @@
                         <h3>Images Uploaded Successfully</h3>
                     </div>
                     
-                        <a href="{{route('patient.begin')}}"  class="btn btn-outline-success mx-5" >Close</a>  
+                        <a href="{{route('patient.begin')}}"  class="btn btn-outline-success mx-5" >OK </a>  
                     <br>
                 </div>
             </div>

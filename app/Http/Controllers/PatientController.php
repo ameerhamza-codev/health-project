@@ -30,7 +30,6 @@ class PatientController extends Controller
         $patient->last_name = $request->lname;
         $patient->email = $request->email;
         $patient->phone = $request->code . $request->phone;
-        $patient->address = $request->address;
         if($request->dob ==null){
             $patient->date_of_birth = $request->dob1;
         }

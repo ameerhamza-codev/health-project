@@ -72,6 +72,7 @@ Route::get('/logout', 'Auth2\LoginController@logout')->name('logout');
 Route::get('/patient-area', 'PatientController@index')->name('patient.begin');
 Route::post('/patient-area', 'PatientController@store')->name('patient.store');
 Route::post('/upload','PatientController@upload')->name('patient.upload');
+Route::post('/update_meeting',"ZoomController@update")->name('meeting.update');
 
 Route::post('/patient-area/update','PatientController@get_patient')->name('get_patient');
 

@@ -1,3 +1,2 @@
-"First Name","Last Name","Date of Birth",Email,Phone,Address,Password
-Ghalib,Bajwa,24/12/2021,ghalibs911@gmail.com,4903072154370,"CB-48, Alfalah housing society
-shah faisal town"
+"First Name","Last Name","Date of Birth",Email,Phone,"Test No","Test Status","CSV Date","Performed By"
+Ghalib,Bajwa,30/11/2021,ghalibs911@gmail.com,4903072154370,1,71,"2021-12-08 15:01:25","Ghalib Bajwa"

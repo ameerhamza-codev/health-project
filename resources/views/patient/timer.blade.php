@@ -56,15 +56,17 @@ function schedule(Schedule $schedule)
 
         <div class="card-body">
 
-            <!-- <div class="grid-example">
-                            <div class="row justify-content-md-center ">
-                           
-                                <div class="shadow col col-md-auto col-sm-1" style="text-align: center;">
-                                <h1 style="font-size: 50px;"><p id="demo"></p></h1>
-                                </div>
-                              </div>
-                             
-                        </div> -->
+            <div class="grid-example">
+                <div class="row justify-content-md-center ">
+
+                    <div class="shadow col col-md-auto col-sm-1" style="text-align: center;">
+                        <h1 style="font-size: 50px;">
+                            <p id="demo"></p>
+                        </h1>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
 
@@ -129,6 +131,8 @@ function schedule(Schedule $schedule)
 </script>
 
 <script>
+
+
     function sleep(time) {
         return new Promise((resolve) => setTimeout(resolve, time));
     }
@@ -156,6 +160,46 @@ function schedule(Schedule $schedule)
             });
     }
     getCount()
+
+
+
+    document.getElementById('demo').innerHTML =
+        05 + ":" + 00;
+    startTimer();
+
+
+    function startTimer() {
+        var presentTime = document.getElementById('demo').innerHTML;
+        var timeArray = presentTime.split(/[:]+/);
+        var m = timeArray[0];
+        var s = checkSecond((timeArray[1] - 1));
+        if (s == 59) {
+            m = m - 1
+        }
+        if (m < 0) {
+            return
+        }
+
+        document.getElementById('demo').innerHTML =
+            m + ":" + s;
+        console.log(m)
+        setTimeout(startTimer, 3000);
+
+    }
+
+    function checkSecond(sec) {
+        if (sec < 10 && sec >= 0) {
+            sec = "0" + sec
+        }; // add zero in front of numbers < 10
+        if (sec < 0) {
+            sec = "59"
+        };
+        return sec;
+    }
+
+
+
+    
 </script>
 
 </html>

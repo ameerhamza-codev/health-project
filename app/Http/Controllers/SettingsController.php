@@ -90,9 +90,9 @@ class SettingsController extends Controller
          
         }else{
         $data = [];
-        $data[] = array('First Name','Last Name','Date of Birth', 'Email','Phone', 'Address','Test No','Test Status','CSV Date');
+        $data[] = array('First Name','Last Name','Date of Birth', 'Email','Phone','Test No','Test Status','CSV Date','Performed By');
         
-        $data[] = array($user->first_name, $user->last_name, $user->date_of_birth,$user->email, $user->phone, $user->address, $user->test_no, $user->test_status, $user->csv_date);
+        $data[] = array($user->first_name, $user->last_name, $user->date_of_birth,$user->email, $user->phone, $user->test_no, $user->test_status, $user->csv_date,$user->performed_by);
         
         $fileName = $user->first_name.'.csv';
         $filePath = public_path($fileName);
@@ -108,10 +108,10 @@ class SettingsController extends Controller
     public function bulkCSV(){
 
         $data = [];
-        $data[] = array('First Name','Last Name','Date of Birth', 'Email','Phone', 'Address');
+        $data[] = array('First Name','Last Name','Date of Birth', 'Email','Phone','Test No','Test Status','CSV Date','Performed By');
         $users = Patient::all()->sortByDesc('id');
         foreach($users as $user){
-            $data[] = array($user->first_name, $user->last_name, $user->date_of_birth,$user->email, $user->phone, $user->address);
+            $data[] = array($user->first_name, $user->last_name, $user->date_of_birth,$user->email, $user->phone, $user->test_no, $user->test_status, $user->csv_date,$user->performed_by );
         }
         $fileName = 'Patients.csv';
         $filePath = public_path($fileName);
@@ -137,12 +137,16 @@ class SettingsController extends Controller
         $res=$mm->create([ 'topic'      => "Doctor Appointment",
         'start_time' => Carbon::now(),
         'host_video' => 1,
-        'participant_video' => 1,]);
+        'participant_video' => 1,]);        
         
-        $meeting->url=$res['data']['join_url'];
+        $join_url=$res['data']['join_url'];
+        $join_url=str_replace("/j/","/wc/join/  ",$join_url);
+
+        $meeting->url=$join_url;
         $meeting->start_url=$res['data']['start_url'];
         $meeting->save();
         $user->test_status=$meeting->id;
+        $user->performed_by=auth()->user()->name;
       
         $user->save();
         return Redirect::away($res['data']['start_url']);
