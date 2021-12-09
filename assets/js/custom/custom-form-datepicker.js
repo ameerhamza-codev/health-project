@@ -28,6 +28,13 @@ $(document).ready(function() {
 	    timepicker: true,
 	    dateTimeSeparator: ' T '
 	});
+	$('#time-format2').datepicker({
+    	language: 'en',
+		dateFormat: 'yyyy/mm/dd',	    
+	    timeFormat: 'hh:ii',
+	    timepicker: true,
+	    dateTimeSeparator: ' T '
+	});
     $('#multi-date').datepicker({
 	    language: 'en',
 	    dateFormat: 'dd/mm/yyyy',

@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+
+
+<?php 
+use Illuminate\Support\Facades\App;
+App::setLocale(Session('app_locale'));
+?>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -54,8 +60,40 @@
 
 
 <script>
+$countw=0;
+$counts=0;
+setInterval(function() {
+        
+        
+        $.ajax({
+            type: "get",
+            url: "{{ route('meet-notification') }}",
+            data: {
+                '_token': $('input[name=_token]').val(),
+                
+            },
+
+        }).done(function(data){
+           
+            if(data.status == "found"){
+                
+                showNotification(("You have an upcomming meeting with "+data.name),'Meeting Alert');
+                
+                 
+                    
+               
+            }else{
+                
+        }
+
+            
+        });
+    }, 40000);
+   
+
     $prev=0;
     $c=0;
+
     setInterval(function() {
         
         $.ajax({
@@ -70,7 +108,7 @@
         }).done(function(data){
             if(data.count > $prev && $c!=0){
                 
-            showNotification(data.name);
+            showNotification((data.name+" is waiting for appointment"), 'New Patient Registered');
             
 
             }
@@ -81,10 +119,10 @@
     }, 1000);
 
 
-    function showNotification($name) {
+    function showNotification($name, $message) {
         
-        const notification = new Notification("New Patient", {
-            body: $name + " has requested a test",
+        const notification = new Notification($message, {
+            body: $name ,
         })
         notification.onclick = (e) => {
             window.location.href = "{{env('APP_URL')}}/notif";

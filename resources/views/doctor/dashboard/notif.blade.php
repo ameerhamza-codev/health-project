@@ -12,8 +12,13 @@ Datatable
 @section('rightbar-content')
 
 <?php 
+
+use Illuminate\Support\Facades\App;
 use App\Patient;
 $patient= Patient::all()->sortByDesc('id');
+
+App::setLocale(Session('app_locale'));
+
 
 ?>
 <div class="breadcrumbbar">
@@ -61,7 +66,7 @@ $patient= Patient::all()->sortByDesc('id');
                                     <td class="text-dark">{{$patient->first_name}} {{$patient->last_name}}</td>
                                     <td class="text-dark">{{$patient->created_at}}</td>
                                     @if($patient->test_status == null)
-                                    <td> <button type="submit" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Access Test</button></td>
+                                    <td> <button type="submit" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Access Test')}}</button></td>
                                     @endif
 
                                     </tr>

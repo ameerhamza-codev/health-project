@@ -7,6 +7,8 @@ Datatable
 <?php
 
 use App\Patient;
+use Illuminate\Support\Facades\App;
+App::setLocale(Session('app_locale'));
 
 $patient = Patient::all()->sortByDesc('id');
 ?>
@@ -77,13 +79,26 @@ $patient = Patient::all()->sortByDesc('id');
                                             <td class="text-dark">{{$patient->email}}</td>
                                             <td class="text-dark">{{$patient->date_of_birth}}</td>
                                             @if($patient->result != null)
-                                            <td class="text-dark"><button type="button" class="btn btn-warning" style=" width: 100px;" disabled>{{$patient->result}}</button></td>
+
+                                            <td class="text-dark">
+                                            @if($patient->result == "Success")
+                                            <button type="button" class="btn btn-success" style=" width: 100px;" disabled>{{$patient->result}}</button>
+                                            @elseif($patient->result == "Fail")
+                                            <button type="button" class="btn btn-danger" style=" width: 100px;" disabled>{{$patient->result}}</button>
+                                            @else
+                                            <button type="button" class="btn btn-warning" style=" width: 100px;" disabled>{{$patient->result}}</button>
+                                            @endif
+                                        </td>
                                             @else
                                             <td></td>
                                             @endif
                                             <td class="text-dark">{{$patient->performed_by}}</td>
-                                            <td class="text-dark"><button type="submit" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
-                                            
+                                              
+
+                                            <td class="text-dark">
+                                            @if($patient->result == "Success")  
+                                                <button type="submit" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
+                                                @endif
                                             <td>
                                                 <!-- <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px; max-height:50px"></a> -->
                                                 <button type="button" value="{{env('APP_URL').$patient->ID_back}},{{env('APP_URL').$patient->ID_front}},{{env('APP_URL').$patient->test}}" id="modalbutton" class="btn btn-rounded btn-primary-rgba"><i class="feather icon-image"></i></button>

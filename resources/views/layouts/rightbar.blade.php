@@ -47,7 +47,7 @@
                             <div class="searchbar">
                                 <form>
                                     <div class="input-group">
-                                        <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
+                                        <input type="search" class="form-control" placeholder="{{__('Search')}}" aria-label="Search" aria-describedby="button-addon2">
                                         <div class="input-group-append">
                                             <button class="btn" type="submit" id="button-addon2"><img src="assets/images/svg-icon/search.svg" class="img-fluid" alt="search"></button>
                                         </div>
@@ -57,22 +57,40 @@
 
                         </li>
 
+
+
                     </ul>
                 </div>
-
                 <li class="list-inline-item" style="float: right; margin-top: 14px;">
+                    
                     <div class="profilebar">
                         <div class="dropdown">
-                        <div class="profilename">
-                                        <h5>{{auth()->user()->name}}</h5>
+                            <div class="profilename">
+                                <h5>{{auth()->user()->name}}</h5>
                             </div>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profilelink">
                                 <div class="dropdown-item">
-                                    
+
                                 </div>
-                                
+
                             </div>
                         </div>
+                    </div>
+                </li>
+                <li class="list-inline-item" style="float: right; margin-top: 10px; margin-right:10px;">
+                    
+                    <div class="profilebar">
+                    
+                        <select id="lang" onchange="chnge()" style="background-color: lightgrey;" class="select2-single form-control" required>
+                            <optgroup>
+                                <option disabled hidden selected>{{Session('app_locale')}}</option>
+                                <option  value="en">En</option>
+                                <option  value="fr">Fr</option>
+
+                            </optgroup>
+
+                        </select>
+                    
                     </div>
                 </li>
             </div>
@@ -89,3 +107,9 @@
 
     <!-- End Footerbar -->
 </div>
+<script>
+    function chnge() {
+        var x = document.getElementById("lang").value;
+        window.location.href = "{{url('/set')}}" + "/" + x;
+    }
+</script>

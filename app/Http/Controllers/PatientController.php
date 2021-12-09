@@ -26,22 +26,31 @@ class PatientController extends Controller
     public function store(Request $request)
     {
 
+        
+            
+        
         $patient = new Patient();
         $patient->first_name = $request->fname;
         $patient->last_name = $request->lname;
         $patient->email = $request->email;
         $patient->phone = $request->code . $request->phone;
+        
         if($request->dob ==null){
             $patient->date_of_birth = $request->dob1;
         }
         else{
             $patient->date_of_birth = $request->dob;
         }
+        if(strpos($patient->date_of_birth,'/')==true || strpos($patient->date_of_birth,'.')==false){
+           
+            return redirect()->back()->with('error', 'Enter Date of Birth in dd.MM.YY Format');
+        }
 
         $patient->save();
         Session(['patient' => $patient->id]);
         //event(new meeting($patient));
-        return view('patient.timer');
+        
+        return redirect('/timer');
     }
     public function check(Request $request)
     {

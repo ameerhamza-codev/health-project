@@ -16,6 +16,8 @@ Datatable
 <?php
 
 use App\passwrod_user;
+use Illuminate\Support\Facades\App;
+App::setLocale(Session('app_locale'));
 ?>
 <div class="breadcrumbbar">
     <div class="row align-items-center">

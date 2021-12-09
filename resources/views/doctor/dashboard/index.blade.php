@@ -7,6 +7,8 @@ use App\Patient;
 use App\CountryCode;
 use App\Http\Controllers\ZoomController;
 use App\ZoomMeetings;
+use Illuminate\Support\Facades\App;
+App::setLocale(Session('app_locale'));
 
 $csvrecords = Patient::where('csv_date', '!=', null)->count();
 
@@ -28,22 +30,20 @@ $body = [
     "page_size" => 100,
 ];
 try {
-    
-$response =  $zmc->client->get($url . $path, $body);
-$data = json_decode($response->getBody(), true);
-$r = [];
-$count = 0;
-for ($i = 0; $i < count($data['meetings']); $i++) {
 
-    if (strpos($data['meetings'][$i]['topic'], env('MEETING_NAME', '')) !== false) {
+    $response =  $zmc->client->get($url . $path, $body);
+    $data = json_decode($response->getBody(), true);
+    $r = [];
+    $count = 0;
+    for ($i = 0; $i < count($data['meetings']); $i++) {
 
-        $r = array_add($r, $count, $data['meetings'][$i]);
-        $count++;
+        if (strpos($data['meetings'][$i]['topic'], env('MEETING_NAME', '')) !== false) {
+
+            $r = array_add($r, $count, $data['meetings'][$i]);
+            $count++;
+        }
     }
-}
-
-}
-catch (\Exception $e) {
+} catch (\Exception $e) {
     return redirect()->back()->with('error', $e->getMessage());
 }
 
@@ -78,16 +78,16 @@ catch (\Exception $e) {
         <div class="col-md-6 col-lg-6 ">
 
             <div class="col-md-8 col-lg-8">
-                <h2 class="page-title">Dashboard</h2>
+                <h2 class="page-title">{{__('Dashboard')}}</h2>
                 <!-- {{auth()->user()->roles()->pluck('name')[0]}} -->
             </div>
 
         </div>
         <div class="col-md-6 col-lg-6">
             <div class="widgetbar">
-
-                <button class="btn btn-primary" data-toggle="modal" data-target="#TestLinkModalCenter"><i class="feather icon-plus mr-2"></i>Generate Test Link</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#CalModalCenter"><i class="feather icon-calendar mr-2"></i>Schedule Test</button>
+                
+                <button class="btn btn-primary" data-toggle="modal" data-target="#TestLinkModalCenter"><i class="feather icon-plus mr-2"></i>{{__('Generate Test Link')}}</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#CalModalCenter"><i class="feather icon-calendar mr-2"></i>{{__('Schedule Test')}}</button>
             </div>
         </div>
     </div>
@@ -110,30 +110,35 @@ catch (\Exception $e) {
         <div class="col-lg-4 col-xl-4">
 
             <div class="card m-b-30">
-                <div class="card-body">
-                    <div class="media">
-                        <span class="align-self-center mr-3 action-icon badge badge-secondary-inverse"><i class="feather icon-users"></i></span>
-                        <div class="media-body">
-                            <p class="mb-0">Patients</p>
-                            <h5 class="mb-0">{{$paitentno}}</h5>
+                <a href="{{url('/patients')}}" style="text-decoration: none !important;color:inherit;">
+                    <div class="card-body">
+                        <div class="media">
+                            <span class="align-self-center mr-3 action-icon badge badge-secondary-inverse"><i class="feather icon-users"></i></span>
+                            <div class="media-body">
+                                <p class="mb-0">{{__('Patients')}}</p>
+                                <h5 class="mb-0">{{$paitentno}}</h5>
 
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
 
             </div>
         </div>
         <div class="col-lg-4 col-xl-4">
             <div class="card m-b-30">
-                <div class="card-body">
-                    <div class="media">
-                        <span class="align-self-center mr-3 action-icon badge badge-secondary-inverse"><i class="feather icon-calendar"></i></span>
-                        <div class="media-body">
-                            <p class="mb-0">Calender</p>
-                            <h5 class="mb-0">{{$meetingsno}} Bookings</h5>
+                <a data-toggle="modal" data-target="#CalModalCenter">
+
+                    <div class="card-body">
+                        <div class="media">
+                            <span class="align-self-center mr-3 action-icon badge badge-secondary-inverse"><i class="feather icon-calendar"></i></span>
+                            <div class="media-body">
+                                <p class="mb-0">{{__('Calender')}}</p>
+                                <h5 class="mb-0">{{$meetingsno}} {{__('Bookings')}}</h5>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         <div class="col-lg-4 col-xl-4">
@@ -143,8 +148,8 @@ catch (\Exception $e) {
                     <div class="media">
                         <span class="align-self-center mr-3 action-icon badge badge-secondary-inverse"><i class="feather icon-file-text"></i></span>
                         <div class="media-body">
-                            <p class="mb-0">Generate CSV</p>
-                            <h5 class="mb-0">{{$csvrecords}} Records</h5>
+                            <p class="mb-0">{{__('Generate CSV')}}</p>
+                            <h5 class="mb-0">{{$csvrecords}} {{__('Records')}}</h5>
                         </div>
                     </div>
                 </div>
@@ -163,7 +168,7 @@ catch (\Exception $e) {
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-9">
-                            <h5 class="card-title mb-0">Patients Status</h5>
+                            <h5 class="card-title mb-0">{{__('Patients Status')}}</h5>
                         </div>
                         <div class="col-3">
 
@@ -176,13 +181,13 @@ catch (\Exception $e) {
                             <thead>
                                 <tr>
 
-                                    <th>Name</th>
-                                    <th>Test Date</th>
-                                    <th>Result</th>
-                                    <th>Generate CSV</th>
-                                    <th>CSV Generated</th>
-                                    <th>Performed By</th>
-                                    <th>Tests</th>
+                                    <th>{{__('Name')}}</th>
+                                    <th>{{__('Test Date')}}</th>
+                                    <th>{{__('Result')}}</th>
+                                    <th>{{__('Generate CSV')}}</th>
+                                    <th>{{__('CSV Generated')}}</th>
+                                    <th>{{__('Performed By')}}</th>
+                                    <th>{{__('Tests')}}</th>
                                     <th>
 
                                     </th>
@@ -207,17 +212,22 @@ catch (\Exception $e) {
 
                                         <td>
                                             <select class="select2-single form-control" onchange="changecolor()" id="testselect" name="test_status" required>
-                                               
-                                                    <option value="{{$patient->result}}" selected hidden> {{$patient->result}}</option>
 
-                                                    <option value="On Hold" class="btn-warning" ><span class="btn-primary">On Hold</span></option>
-                                                    <option value="Fail" class="btn-danger"><span class="btn-danger">Fail</span></option>
-                                                    <option value="Success" class="btn-success"><span class="btn-success">Success</span></option>
+                                                <option value="{{$patient->result}}" selected hidden> {{__($patient->result)}}</option>
+
+                                                <option value="On Hold" class="btn-warning"><span class="btn-primary">{{__('On Hold')}}</span></option>
+                                                <option value="Fail" class="btn-danger"><span class="btn-danger">{{__('Fail')}}</span></option>
+                                                <option value="Success" class="btn-success"><span class="btn-success">{{__('Success')}}</span></option>
 
                                             </select>
                                         </td>
                                         <input type="hidden" name="imgfrontin" value="{{env('APP_URL').$patient->ID_back}}">
-                                        <td> <button type="submit" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>Generate CSV</button></td>
+
+                                        <td> 
+                                        @if($patient->result == "Success")    
+                                        <button type="submit" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Generate CSV')}}</button></td>
+                                        
+                                        @endif
                                         <td>{{$patient->csv_date}}</td>
                                         <td>{{$patient->performed_by}}</td>
                                         <td>
@@ -303,7 +313,7 @@ catch (\Exception $e) {
 
                             <select class="select2-single form-control" id="pat" onChange="updateinput();" name="pat">
                                 <optgroup>
-                                    <option value="" disabled selected hidden>Select Already Registered Patient</option>
+                                    <option value="" disabled selected hidden>{{__('Select Already Registered Patient')}}</option>
                                     @foreach($patient2->unique('email') as $pat)
                                     <option value="{{$pat->id}}">{{$pat->first_name}} {{$pat->last_name}} ({{$pat->email}}) </option>
                                     @endforeach
@@ -313,7 +323,7 @@ catch (\Exception $e) {
                             <br>
 
                             <div class="form-group mb-0">
-                                <h6>Phone</h6>
+                                <h6>{{__('Phone')}}</h6>
                                 <div class="row">
 
                                     <div class="col-lg-4">
@@ -327,7 +337,7 @@ catch (\Exception $e) {
                                         </select>
                                     </div>
                                     <div class="col-lg-8">
-                                        <input type="tel" class="form-control" id="phone" placeholder="Phone" required name="phone" />
+                                        <input type="tel" class="form-control" id="phone" placeholder="{{__('Phone')}}" required name="phone" />
                                     </div>
                                 </div>
                             </div>
@@ -344,8 +354,8 @@ catch (\Exception $e) {
 
                     </div>
                     <div class="modal-footer" style="background-color: #F2F5FA;">
-                        <button type="submit" name="send" value="true" class="btn btn-secondary">Send To Patient</button>
-                        <button type="submit" name="add" value="true" class="btn btn-primary">Add to Calender</button>
+                        <button type="submit" name="send" value="true" class="btn btn-secondary">{{__('Send To Patient')}}</button>
+                        <button type="submit" name="add" value="true" class="btn btn-primary">{{__('Add to Calender')}}</button>
                     </div>
                     </form>
                 </div>
@@ -378,7 +388,7 @@ catch (\Exception $e) {
                                                 <div class="form-group">
                                                     <select class="select2-single form-control" id="pat2" onChange="updateinput();" name="pat">
                                                         <optgroup>
-                                                            <option value="" disabled selected hidden>Select Already Registered Patient</option>
+                                                            <option value="" disabled selected hidden>{{__('Select Already Registered Patient')}}</option>
                                                             @foreach($patient2->unique('email') as $pat)
                                                             <option value="{{$pat->id}}">{{$pat->first_name}} {{$pat->last_name}} ({{$pat->email}}) </option>
                                                             @endforeach
@@ -404,11 +414,13 @@ catch (\Exception $e) {
                                                         </select>
                                                     </div>
                                                     <div class="col-lg-8">
-                                                        <input type="tel" class="form-control" id="phone2" name="phone" placeholder="Phone" required />
+                                                        <input type="tel" class="form-control" id="phone2" name="phone" placeholder="{{__('Phone')}}" required />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Event start</label>
+                                                   
+                                                   
                                                     <input type="text" name="date" id="ev_date" class="form-control col-xs-3" required />
                                                 </div>
 
@@ -446,13 +458,20 @@ catch (\Exception $e) {
                 <form action="{{route('meeting.update')}}" method="POST">
                     @csrf
                     <h6>Start time</h6>
-                    <input type="text" id="p_time2" name="time2" class="form-control" />
+                    <!-- <input type="text" id="time-format" name="time2" class="form-control" /> -->
                     <input type="text" id="p_time" name="time" hidden class="form-control" />
+
+                    <div class="input-group">
+                        <input type="text" id="time-format2" required name="time2" class="form-control" placeholder="dd/mm/yyyy - hh:ii aa" aria-describedby="basic-addon5" />
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon5"><i class="feather icon-calendar"></i></span>
+                        </div>
+                    </div>
                     <input type="hidden" id="p_id" name="phone" />
 
 
                     <br>
-                    <h6 id="p_phonehad">Phone</h6>
+                    <h6 id="p_phonehad">{{__('Phone')}}</h6>
                     <p id="p_phone"></p>
                     <br>
             </div>
@@ -495,18 +514,15 @@ catch (\Exception $e) {
 
 <script>
     changecolor();
-    function changecolor(){
+
+    function changecolor() {
         var x = document.getElementById("testselect");
- 
-        if(x.value=="Success"){
+
+        if (x.value == "Success") {
             x.style.backgroundColor = "green";
-        }
-        else if(x.value=="Fail")
-        {
+        } else if (x.value == "Fail") {
             x.style.backgroundColor = "red";
-        }
-        else if(x.value=="On Hold")
-        {
+        } else if (x.value == "On Hold") {
             x.style.backgroundColor = "orange";
         }
     }
@@ -591,12 +607,12 @@ catch (\Exception $e) {
                 document.getElementById("p_phonehad").innerHTML = "Name";
                 document.getElementById("p_phone").innerHTML = event.name;
             }
-            $date=event.date;
-            $date=$date.replace('T', ' ');
-            $date=$date.replace('Z', ' ');
+            $date = event.date;
+            $date = $date.replace('T', ' ');
+            $date = $date.replace('Z', ' ');
             console.log($date);
             document.getElementById("p_time").value = (event.date);
-            document.getElementById("p_time2").value = $date;
+            document.getElementById("time-format2").value = $date;
 
             document.getElementById("p_id").value = (event.phone);
 
@@ -633,6 +649,21 @@ catch (\Exception $e) {
     });
 
     $(document).ready(function() {
+        $('#time-format2').datepicker({
+            language: 'en',
+            dateFormat: 'yyyy/mm/dd',
+            timeFormat: 'hh:ii',
+            timepicker: true,
+            dateTimeSeparator: ' T '
+        });
+
+        $('#ev_date').datepicker({
+            language: 'en',
+            dateFormat: 'yyyy/mm/dd',
+            timeFormat: 'hh:ii',
+            timepicker: true,
+            dateTimeSeparator: ' T '
+        });
 
 
 
@@ -644,7 +675,7 @@ catch (\Exception $e) {
         for (i in calendly) {
             date = calendly[i]['start_time'];
             name = calendly[i]['topic'].replace(": {{env('MEETING_NAME', '')}}", "");
-          
+
             $('#calendarFull').fullCalendar('renderEvent', {
                 title: 'Calendly Meeting',
                 start: date,
@@ -669,7 +700,7 @@ catch (\Exception $e) {
                 phone: sites[i].phone,
                 date: sites[i].start_time,
                 ev_url: sites[i].start_url,
-                
+
                 color: '#00a65a',
 
             }, true);

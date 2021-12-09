@@ -17,6 +17,7 @@ use GuzzleHttp\Promise\Create;
 use App\ZoomMeetings;
 use Illuminate\Support\Facades\Redirect;
 use GuzzleHttp\Client;
+use phpseclib3\File\ASN1\Maps\Time;
 
 class SettingsController extends Controller
 {
@@ -148,5 +149,31 @@ class SettingsController extends Controller
       
         $user->save();
         return Redirect::away($res['data']['start_url']);
+    }
+
+    public function meet_notif(){
+        date_default_timezone_set("Asia/Karachi");
+        $meet = ZoomMeetings::all();
+        $d=Carbon::now();
+        $d=$d->shiftTimezone('Asia/Karachi');
+        
+        $d=substr($d,0,-3);
+        
+       
+        foreach($meet as $meeting){
+            
+            $time=Carbon::parse($meeting->start_time);
+            $time=substr($time,0,-3);
+            if ($time ==($d)){
+
+                return response()->json(['name'=>$meeting->phone, 'status'=>'found']);
+            }
+            else{
+
+                
+            }
+        }
+        
+        return response()->json(['status'=>($time." ".$d)]) ;
     }
 }

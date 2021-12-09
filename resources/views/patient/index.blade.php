@@ -49,8 +49,15 @@
 
                     <br>
                     <div class="card-body">
+                        
 
                         <div id="google_translate_element"></div>
+
+                        @if(Session('error'))
+                        <div class="alert alert-danger">
+                            {{ Session('error') }}
+                        </div>
+                        @endif
                         <form action="{{ route('patient.store') }}" method="POST">
                             @csrf
                             <select class="select2-single form-control" id="pat" onChange="updateinput();" name="pat">
