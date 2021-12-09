@@ -49,8 +49,8 @@
 
                     <br>
                     <div class="card-body">
-                        
-                    <div id="google_translate_element"></div>
+
+                        <div id="google_translate_element"></div>
                         <form action="{{ route('patient.store') }}" method="POST">
                             @csrf
                             <select class="select2-single form-control" id="pat" onChange="updateinput();" name="pat">
@@ -73,10 +73,10 @@
                             </div>
                             <br>
 
-                            <label >Enter Date of Birth in Required Format </label>
+                            <label>Enter Date of Birth in Required Format </label>
                             <input type="text" placeholder="dd.MM.YYYY" required class="form-control" name="dob" id="date_input" />
 
-                            
+
                             <br>
                             <div class="form-group mb-0">
                                 <input type="email" required class="form-control" name="email" id="email" placeholder="Email">
@@ -99,13 +99,13 @@
                             </div>
 
                             <br>
-                            
-                           
+
+
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="customSwitch2" required>
                                 <label class="custom-control-label" for="customSwitch2">I Accept the Terms and Conditions</label>
                             </div>
-                          
+
                     </div>
                     <div class="modal-footer" style="background-color: #F2F5FA;">
                         <button type="submit" class="btn btn-primary btn-lg btn-block font-18">Proceed</button>
@@ -146,9 +146,11 @@
 </body>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-}
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en'
+        }, 'google_translate_element');
+    }
 </script>
 
 <script type="text/javascript">

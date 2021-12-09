@@ -32,7 +32,7 @@ class SMSController extends Controller
   
   
         } catch (Exception $e) {
-            dd("Error: ". $e->getMessage());
+            return redirect()->back()->with('error', 'Something went wrong');
         }
     }
 }

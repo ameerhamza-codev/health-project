@@ -51,3 +51,51 @@
         <!-- End JS -->
     </body>
 </html>    
+
+
+<script>
+    $prev=0;
+    $c=0;
+    setInterval(function() {
+        
+        $.ajax({
+            type: "post",
+            url: "{{ route('checkno') }}",
+            data: {
+                '_token': $('input[name=_token]').val(),
+                'prev': $prev,
+                
+            },
+
+        }).done(function(data){
+            if(data.count > $prev && $c!=0){
+                
+            showNotification(data.name);
+            
+
+            }
+            $c++;
+        $prev=data.count;
+        
+        });
+    }, 1000);
+
+
+    function showNotification($name) {
+        
+        const notification = new Notification("New Patient", {
+            body: $name + " has requested a test",
+        })
+        notification.onclick = (e) => {
+            window.location.href = "{{env('APP_URL')}}/notif";
+        };
+    }
+    console.log(Notification.permission);
+    if (Notification.permission === "granted") {
+       
+    } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+            console.log(permission);
+        });
+    }
+</script>

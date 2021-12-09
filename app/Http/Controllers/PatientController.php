@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Illuminate\Support\Facades\Validator;
 use App\ZoomMeetings;
 use Illuminate\Support\Facades\Redirect;
+use App\Events\meeting;
 
 class PatientController extends Controller
 {
@@ -39,7 +40,21 @@ class PatientController extends Controller
 
         $patient->save();
         Session(['patient' => $patient->id]);
+        //event(new meeting($patient));
         return view('patient.timer');
+    }
+    public function check(Request $request)
+    {
+        
+        $p =Patient::all();
+        $c=$p->count();
+        $e=Patient::all()->sortByDesc('id')->first();
+        if($request->prev < $c){
+            return response()->json(['name' => $e->first_name, 'count' => $c]);
+        }
+        else{
+            return response()->json(['count' => $c]);
+        }
     }
 
     public function get_patient(Request $request)
@@ -56,7 +71,7 @@ class PatientController extends Controller
         if ($patient->test_status !=null) {
             
             $meet = ZoomMeetings::where('id',$patient->test_status)->first();
-            echo ($meet->url);
+            echo ($meet->join_url);
             
         } else {
             echo "null";

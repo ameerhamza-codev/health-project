@@ -69,6 +69,7 @@
 html {
   position: relative;
   min-height: 100%;
+  overflow:initial !important;
 }
 
 body {
@@ -210,25 +211,25 @@ code {
 
 .navigationbar {
   height: calc(100vh - 100px);
-  overflow: auto;
+  overflow: hidden;
   -webkit-transition: 0.5s;
   transition: 0.5s;
 }
 
 ::-webkit-scrollbar {
-  width: 0;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background:  #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: transparent;
+  background: #888;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: transparent;
+  background: black;
 }
 
 /* 
@@ -31565,7 +31566,7 @@ input[type=range]:focus {
   margin: 30px 0;
   border-radius: 3px;
   min-height: 250px;
-  overflow: hidden;
+  overflow: scroll;
   position: relative;
   border: 1px solid rgba(0, 0, 0, 0.03);
 }

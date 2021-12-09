@@ -144,53 +144,55 @@ class ZoomController extends Controller
         $matchThese = ['start_time' => $request->time, 'phone' => $request->phone];
         $zoom2= ZoomMeetings::where($matchThese)->get();
         //$zoom2= ZoomMeetings::where('start_time','=',$request->time)->get();
+        if(isset($zoom2[0])){
+        
         
         $id=($zoom2[0]->id);
         $upzoom= ZoomMeetings::find($id);
         $upzoom->start_time=$request->time2;
         $upzoom->save();
+        $sms=new SMSController();
+        $sms->sendSMS($request->phone,env('APP_URL','').'/patient-area',$request->time2);
+        }
         return redirect()->back();
     }
     public function store(Request $request)
     {   
-        $todate = date('Y-m-d H:i:s');
-        $meeting_dates= ZoomMeetings::all();
-     
-        
-        foreach ($meeting_dates as $key) {
-            if(strtotime($key->start_time)<strtotime($todate)){
-                
-               ZoomMeetings::find($key->id)->delete();
-            }
-        }
-        
-
 
         $sms= new SMSController();
-
-        $meeting=new ZoomMeetings();
-        $meeting->topic="Doctor Appointment";
-        $meeting->start_time=$request->date;
-        $meeting->phone=$request->code.$request->phone;
         
-        $res=$this->create([
-            'topic'      => "Doctor Appointment",
-            'start_time' => $meeting->start_time,
-            'host_video' => 1,
-            'participant_video' => 1,
-        ]);
-
-        $meeting->url=$res['data']['join_url'];
-        $meeting->start_url=$res['data']['start_url'];
-        $meeting->save();
+        if($request->send=='true'){
+            $sms->sendSMS($request->code.$request->phone,env('APP_URL','').'/patient-area',$request->date);
+            
+            return redirect()->back()->with('meeting-success','Meeting Sent Successfully');
+        }
+        elseif($request->add=='true'){
+            $todate = date('Y-m-d H:i:s');
+            $meeting_dates= ZoomMeetings::all();
+         
+            
+            foreach ($meeting_dates as $key) {
+                if(strtotime($key->start_time)<strtotime($todate)){
+                    
+                   ZoomMeetings::find($key->id)->delete();
+                }
+            }
+            
+    
+    
+            $meeting=new ZoomMeetings();
+            $meeting->start_time=$request->date;
+            $meeting->phone=$request->code.$request->phone;
+            $meeting->save();
         
-        $sms->sendSMS($meeting->phone,$meeting->url,$meeting->start_time);
+            $sms->sendSMS($meeting->phone,env('APP_URL','').'/patient-area',$meeting->start_time);
+    
+            
+            return redirect()->back()->with('meeting-success','Meeting Added to Calender Successfully');
 
+        }
+       
         
-        
 
-        $url=$res['data']['join_url'];
-
-        return redirect()->back()->with('meeting-success','Meeting Created Successfully');
     }
 }

@@ -66,16 +66,14 @@ class SettingsController extends Controller
             $user->delete();
             return redirect()->back()->with('success', 'User deleted successfully');
         } else {
-            if (User::where('phone', $request->code . $request->phone)->exists()) {
-                return redirect()->back()->with('error', 'Phone already exists');
-            } else {
+            
                 $user->name = $request->name;
                 $user->phone =  $request->phone;
                 $user->save();
                 $user->roles()->sync($request->role);
                 return redirect()->back()->with('success', 'User updated successfully');
             }
-        }
+        
     }
 
     public function generateCSV(Request $request){
@@ -90,9 +88,9 @@ class SettingsController extends Controller
          
         }else{
         $data = [];
-        $data[] = array('First Name','Last Name','Date of Birth', 'Email','Phone','Test No','Test Status','CSV Date','Performed By');
+        $data[] = array('Given Name','Family Name','Date of Birth','Language','Manufacturer Code','Type Code' ,'Sample Date Time','Testing Center Or Facility','Member State of Test');
         
-        $data[] = array($user->first_name, $user->last_name, $user->date_of_birth,$user->email, $user->phone, $user->test_no, $user->test_status, $user->csv_date,$user->performed_by);
+        $data[] = array($user->first_name, $user->last_name, $user->date_of_birth,'Fr','1223','LP217198-3',$user->created_at, 'DR NGUIFFO BOYOM', 'CH');
         
         $fileName = $user->first_name.'.csv';
         $filePath = public_path($fileName);
@@ -108,11 +106,12 @@ class SettingsController extends Controller
     public function bulkCSV(){
 
         $data = [];
-        $data[] = array('First Name','Last Name','Date of Birth', 'Email','Phone','Test No','Test Status','CSV Date','Performed By');
+        $data[] = array('Given Name','Family Name','Date of Birth','Language','Manufacturer Code','Type Code' ,'Sample Date Time','Testing Center Or Facility','Member State of Test');
         $users = Patient::all()->sortByDesc('id');
         foreach($users as $user){
-            $data[] = array($user->first_name, $user->last_name, $user->date_of_birth,$user->email, $user->phone, $user->test_no, $user->test_status, $user->csv_date,$user->performed_by );
-        }
+            if($user->result =="Success"){
+            $data[] = array($user->first_name, $user->last_name, $user->date_of_birth,'Fr','1223','LP217198-3',$user->created_at, 'DR NGUIFFO BOYOM', 'CH');
+        }}
         $fileName = 'Patients.csv';
         $filePath = public_path($fileName);
         $file = fopen($filePath, 'w');
@@ -131,7 +130,6 @@ class SettingsController extends Controller
         
         $user = Patient::find($request->id);
         $meeting->phone=$user->phone;
-        $meeting->topic="Doctor Appointment";
       
         $mm= new ZoomController();
         $res=$mm->create([ 'topic'      => "Doctor Appointment",
@@ -140,9 +138,9 @@ class SettingsController extends Controller
         'participant_video' => 1,]);        
         
         $join_url=$res['data']['join_url'];
-        $join_url=str_replace("/j/","/wc/join/  ",$join_url);
+        $join_url=str_replace("/j/","/wc/join/",$join_url);
 
-        $meeting->url=$join_url;
+        $meeting->join_url=$join_url;
         $meeting->start_url=$res['data']['start_url'];
         $meeting->save();
         $user->test_status=$meeting->id;

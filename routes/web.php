@@ -74,6 +74,8 @@ Route::post('/patient-area', 'PatientController@store')->name('patient.store');
 Route::post('/upload','PatientController@upload')->name('patient.upload');
 Route::post('/update_meeting',"ZoomController@update")->name('meeting.update');
 
+Route::post('/patientcheck', 'PatientController@check')->name('checkno');
+
 Route::post('/patient-area/update','PatientController@get_patient')->name('get_patient');
 
 Route::post('/generate-csv','SettingsController@generateCSV')->name('generateCSV');

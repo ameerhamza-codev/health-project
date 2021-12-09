@@ -27,6 +27,8 @@ $body = [
     'headers' => $zmc->headers,
     "page_size" => 100,
 ];
+try {
+    
 $response =  $zmc->client->get($url . $path, $body);
 $data = json_decode($response->getBody(), true);
 $r = [];
@@ -39,6 +41,12 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
         $count++;
     }
 }
+
+}
+catch (\Exception $e) {
+    return redirect()->back()->with('error', $e->getMessage());
+}
+
 
 
 //$name = str_replace(': Event_by_Calendly', '', $r['1']['topic']);
@@ -198,15 +206,14 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                                         <!-- <td><button type="button" class="btn btn-danger px-5" disabled><i class="feather icon-x mr-2"></i>Fail</button></td> -->
 
                                         <td>
-                                            <select class="select2-single form-control" name="test_status" required>
-                                                <optgroup>
+                                            <select class="select2-single form-control" onchange="changecolor()" id="testselect" name="test_status" required>
+                                               
                                                     <option value="{{$patient->result}}" selected hidden> {{$patient->result}}</option>
 
-                                                    <option value="On Hold"><span class="btn-primary">On Hold</span></option>
-                                                    <option value="Fail"><span class="btn-danger">Fail</span></option>
-                                                    <option value="Success"><span class="btn-danger">Success</span></option>
+                                                    <option value="On Hold" class="btn-warning" ><span class="btn-primary">On Hold</span></option>
+                                                    <option value="Fail" class="btn-danger"><span class="btn-danger">Fail</span></option>
+                                                    <option value="Success" class="btn-success"><span class="btn-success">Success</span></option>
 
-                                                </optgroup>
                                             </select>
                                         </td>
                                         <input type="hidden" name="imgfrontin" value="{{env('APP_URL').$patient->ID_back}}">
@@ -337,8 +344,8 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
 
                     </div>
                     <div class="modal-footer" style="background-color: #F2F5FA;">
-                        <button type="submit" class="btn btn-secondary">Send To Patient</button>
-                        <button type="submit" class="btn btn-primary">Add to Calender</button>
+                        <button type="submit" name="send" value="true" class="btn btn-secondary">Send To Patient</button>
+                        <button type="submit" name="add" value="true" class="btn btn-primary">Add to Calender</button>
                     </div>
                     </form>
                 </div>
@@ -409,7 +416,7 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                            <button type="submit" name="add" value="true" class="btn btn-primary">Save changes</button>
                                         </div>
                                     </form>
                                 </div>
@@ -450,10 +457,10 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                     <br>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-success" >Save Changes</button>
+                <button type="submit" class="btn btn-success">Save Changes</button>
 
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <a id="p_url" target="_blank" class="btn btn-primary">Start Meeting Now</a>
+
             </div>
             </form>
         </div>
@@ -487,12 +494,28 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
 <script src="{{ asset('assets/js/custom/custom-calender.js') }}"></script>
 
 <script>
+    changecolor();
+    function changecolor(){
+        var x = document.getElementById("testselect");
+ 
+        if(x.value=="Success"){
+            x.style.backgroundColor = "green";
+        }
+        else if(x.value=="Fail")
+        {
+            x.style.backgroundColor = "red";
+        }
+        else if(x.value=="On Hold")
+        {
+            x.style.backgroundColor = "orange";
+        }
+    }
+
     function updateinput() {
         var pat = ($('#pat').val());
         if (pat == null) {
             var pat = ($('#pat2').val());
         }
-        console.log(pat);
         $.ajax({
             type: "POST",
             url: "{{ route('get_patient') }}",
@@ -524,7 +547,7 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
             $('#code2').val(code);
             console.log($('#code').val() == code);
             $('#phone2').val(phone);
-            
+
             console.log(data.id);
             $('#zoomid').val(data.id);
 
@@ -568,12 +591,15 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                 document.getElementById("p_phonehad").innerHTML = "Name";
                 document.getElementById("p_phone").innerHTML = event.name;
             }
-
+            $date=event.date;
+            $date=$date.replace('T', ' ');
+            $date=$date.replace('Z', ' ');
+            console.log($date);
             document.getElementById("p_time").value = (event.date);
-            document.getElementById("p_time2").value = (event.date);
-            
+            document.getElementById("p_time2").value = $date;
+
             document.getElementById("p_id").value = (event.phone);
-            
+
             document.getElementById("p_url").href = event.ev_url;
 
 
@@ -617,9 +643,8 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
 
         for (i in calendly) {
             date = calendly[i]['start_time'];
-            console.log("{{env('MEETING_NAME', '')}}");
             name = calendly[i]['topic'].replace(": {{env('MEETING_NAME', '')}}", "");
-            console.log(name);
+          
             $('#calendarFull').fullCalendar('renderEvent', {
                 title: 'Calendly Meeting',
                 start: date,
@@ -644,6 +669,8 @@ for ($i = 0; $i < count($data['meetings']); $i++) {
                 phone: sites[i].phone,
                 date: sites[i].start_time,
                 ev_url: sites[i].start_url,
+                
+                color: '#00a65a',
 
             }, true);
         }
