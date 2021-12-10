@@ -30,9 +30,10 @@ class SMSController extends Controller
                 'from' => $twilio_number, 
                 'body' => $message]);
   
-  
+           return 1;
         } catch (Exception $e) {
-            return redirect()->back()->with('meeting-error', "SMS did not go through, check if you put a Valid number");
+            return 0;
+            //return redirect()->back()->with('meeting-error', "SMS did not go through, check if you put a Valid number");
         }
     }
 }

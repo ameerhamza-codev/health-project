@@ -162,9 +162,14 @@ class ZoomController extends Controller
         $sms= new SMSController();
         
         if($request->send=='true'){
-            $sms->sendSMS($request->code.$request->phone,env('APP_URL','').'/patient-area',$request->date);
-            
+            if($sms->sendSMS($request->code.$request->phone,env('APP_URL','').'/patient-area',$request->date)==1){
+
             return redirect()->back()->with('meeting-success','Meeting Created Successfully');
+            }
+            else{
+                return redirect()->back()->with('meeting-error','Error in sending SMS');
+            }
+            
         }
         elseif($request->add=='true'){
             $todate = date('Y-m-d H:i:s');
@@ -185,10 +190,15 @@ class ZoomController extends Controller
             $meeting->phone=$request->code.$request->phone;
             $meeting->save();
         
-            $sms->sendSMS($meeting->phone,env('APP_URL','').'/patient-area',$meeting->start_time);
+            if($sms->sendSMS($meeting->phone,env('APP_URL','').'/patient-area',$meeting->start_time)==1){
+                return redirect()->back()->with('meeting-success','Meeting Created Successfully');
+            }
+            else{
+                return redirect()->back()->with('meeting-error','Error in sending SMS');
+            }
             
             
-            return redirect()->back()->with('meeting-success','Meeting Added to Calender Successfully');
+            //return redirect()->back()->with('meeting-success','Meeting Added to Calender Successfully');
 
         }
        

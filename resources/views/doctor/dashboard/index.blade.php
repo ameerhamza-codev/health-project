@@ -8,6 +8,7 @@ use App\CountryCode;
 use App\Http\Controllers\ZoomController;
 use App\ZoomMeetings;
 use Illuminate\Support\Facades\App;
+
 App::setLocale(Session('app_locale'));
 
 $csvrecords = Patient::where('csv_date', '!=', null)->count();
@@ -85,7 +86,7 @@ try {
         </div>
         <div class="col-md-6 col-lg-6">
             <div class="widgetbar">
-                
+
                 <button class="btn btn-primary" data-toggle="modal" data-target="#TestLinkModalCenter"><i class="feather icon-plus mr-2"></i>{{__('Generate Test Link')}}</button>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#CalModalCenter"><i class="feather icon-calendar mr-2"></i>{{__('Schedule Test')}}</button>
             </div>
@@ -99,18 +100,19 @@ try {
     </div>
 
     <script>
-         showNotification( "{{ session('meeting-success') }}",'Meeting Alert');
-         function showNotification($name, $message) {
-        
-        const notification = new Notification($message, {
-            body: $name ,
-        })
-        notification.onclick = (e) => {
-            window.location.href = "{{env('APP_URL')}}/notif";
-        };
-    }
+        showNotification("{{ session('meeting-success') }}", 'Meeting Alert');
+
+        function showNotification($name, $message) {
+
+            const notification = new Notification($message, {
+                body: $name,
+            })
+            notification.onclick = (e) => {
+                window.location.href = "{{env('APP_URL')}}/notif";
+            };
+        }
     </script>
-    
+
     @endif
     @if(session('meeting-error'))
     <br>
@@ -118,10 +120,19 @@ try {
         {{ session('meeting-error') }}
     </div>
     <script>
-            showNotification( "{{ session('meeting-error') }}",'Meeting Alert');
-         
+        showNotification("{{ session('meeting-error') }}", 'Meeting Alert');
+
+        function showNotification($name, $message) {
+
+            const notification = new Notification($message, {
+                body: $name,
+            })
+            notification.onclick = (e) => {
+                window.location.href = "{{env('APP_URL')}}/notif";
+            };
+        }
     </script>
-@endif
+    @endif
 </div>
 
 
@@ -237,28 +248,29 @@ try {
                                         <td>
                                             @if(__($patient->result) == __('On Hold'))
                                             <select class="select2-single form-control" style="background-color: #F9A800;" id="testselect" name="test_status" required>
-                                            @elseif(__($patient->result) == __('Success'))
-                                            <select class="select2-single form-control" style="background-color: #54BC5E;" id="testselect" name="test_status" required>
-                                            @elseif(__($patient->result) == __('Fail'))
-                                            <select class="select2-single form-control" style="background-color: #F13C40;" id="testselect" name="test_status" required>
-                                            @else
-                                            <select class="select2-single form-control" id="testselect" name="test_status" required>
-                                            @endif
-                                                
-                                                <option value="{{$patient->result}}"  selected hidden> {{__($patient->result)}}</option>
-                                                
-                                                <option value="On Hold" class="btn-warning"  ><span class="btn-primary">{{__('On Hold')}}</span></option>
-                                                <option value="Fail" class="btn-danger"><span class="btn-danger">{{__('Fail')}}</span></option>
-                                                <option value="Success" class="btn-success"><span class="btn-success">{{__('Success')}}</span></option>
+                                                @elseif(__($patient->result) == __('Success'))
+                                                <select class="select2-single form-control" style="background-color: #54BC5E;" id="testselect" name="test_status" required>
+                                                    @elseif(__($patient->result) == __('Fail'))
+                                                    <select class="select2-single form-control" style="background-color: #F13C40;" id="testselect" name="test_status" required>
+                                                        @else
+                                                        <select class="select2-single form-control" id="testselect" name="test_status" required>
+                                                            @endif
 
-                                            </select>
+                                                            <option value="{{$patient->result}}" selected hidden> {{__($patient->result)}}</option>
+
+                                                            <option value="On Hold" class="btn-warning"><span class="btn-primary">{{__('On Hold')}}</span></option>
+                                                            <option value="Fail" class="btn-danger"><span class="btn-danger">{{__('Fail')}}</span></option>
+                                                            <option value="Success" class="btn-success"><span class="btn-success">{{__('Success')}}</span></option>
+
+                                                        </select>
                                         </td>
                                         <input type="hidden" name="imgfrontin" value="{{env('APP_URL').$patient->ID_back}}">
 
-                                        <td> 
-                                        @if($patient->result == "Success")    
-                                        <button type="submit" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Generate CSV')}}</button></td>
-                                        
+                                        <td>
+                                            @if($patient->result == "Success")
+                                            <button type="submit" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Generate CSV')}}</button>
+                                        </td>
+
                                         @endif
                                         <td>{{$patient->csv_date}}</td>
                                         <td>{{$patient->performed_by}}</td>
@@ -451,8 +463,8 @@ try {
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Event start</label>
-                                                   
-                                                   
+
+
                                                     <input type="text" name="date" id="ev_date" class="form-control col-xs-3" required />
                                                 </div>
 
@@ -545,8 +557,6 @@ try {
 <script src="{{ asset('assets/js/custom/custom-calender.js') }}"></script>
 
 <script>
-    
-
     function changecolor() {
         var x = document.getElementById("testselect");
 
@@ -679,7 +689,7 @@ try {
         selectable: true,
         snapDuration: '00:10:00'
     });
-   
+
 
     $(document).ready(function() {
         $('#time-format2').datepicker({
@@ -722,7 +732,7 @@ try {
                 name: name,
                 date: date,
                 ev_url: calendly[i]['join_url'],
-               
+
             }, true);
         }
 
