@@ -41,7 +41,7 @@ class PatientController extends Controller
         else{
             $patient->date_of_birth = $request->dob;
         }
-        if(strpos($patient->date_of_birth,'/')==true || strpos($patient->date_of_birth,'.')==false){
+        if(strpos($patient->date_of_birth,'/')==true || substr_count($patient->date_of_birth, '.')!=2){
            
             return redirect()->back()->with('error', 'Enter Date of Birth in dd.MM.YY Format');
         }
@@ -68,9 +68,17 @@ class PatientController extends Controller
 
     public function get_patient(Request $request)
     {
-        $patient = Patient::find($request->pat);
+        $patient = Patient::Where('phone', $request->code.$request->pat)->first();
+        
         return response()->json($patient);
     }
+    public function get_patient2(Request $request)
+    {
+        $patient = Patient::Where('id', $request->pat)->first();
+        
+        return response()->json($patient);
+    }
+
 
     public function status()
     {

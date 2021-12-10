@@ -32,7 +32,7 @@ class SMSController extends Controller
   
   
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Something went wrong');
+            return redirect()->back()->with('meeting-error', "SMS did not go through, check if you put a Valid number");
         }
     }
 }

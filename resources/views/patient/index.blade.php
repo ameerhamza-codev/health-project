@@ -49,7 +49,7 @@
 
                     <br>
                     <div class="card-body">
-                        
+
 
                         <div id="google_translate_element"></div>
 
@@ -60,7 +60,7 @@
                         @endif
                         <form action="{{ route('patient.store') }}" method="POST">
                             @csrf
-                            <select class="select2-single form-control" id="pat" onChange="updateinput();" name="pat">
+                            <!-- <select class="select2-single form-control" id="pat" onChange="updateinput();" name="pat">
                                 <optgroup>
                                     <option value="" disabled selected hidden>Already a Patient</option>
                                     @foreach($patients->unique('email') as $pat)
@@ -68,26 +68,9 @@
                                     @endforeach
                                 </optgroup>
 
-                            </select>
-
-                            <br>
-
-                            <div class="input-group">
-
-                                <input type="text" class="form-control" placeholder="First Name" name="fname" id="fname" required />
-                                <span class="input-group-addon"></span>
-                                <input type="text" class="form-control" placeholder="Last Name" name="lname" id="lname" required />
-                            </div>
-                            <br>
-
-                            <label>Enter Date of Birth in Required Format </label>
-                            <input type="text" placeholder="dd.MM.YYYY" required class="form-control" name="dob" id="date_input" />
+                            </select> -->
 
 
-                            <br>
-                            <div class="form-group mb-0">
-                                <input type="email" required class="form-control" name="email" id="email" placeholder="Email">
-                            </div>
                             <br>
                             <div class="row">
                                 <div class="col-lg-4">
@@ -101,9 +84,32 @@
                                     </select>
                                 </div>
                                 <div class="col-lg-8">
-                                    <input type="tel" class="form-control" required id="phone" name="phone" placeholder="Phone" />
+                                    <input class="form-control" id="pat" value="" name="phone" onChange="updateinput();" placeholder="Phone">
+
                                 </div>
                             </div>
+                            <br>
+
+                            <div class="input-group">
+
+                                <input type="text" class="form-control" placeholder="First Name" name="fname" id="fname" required />
+                                <span class="input-group-addon"></span>
+                                <input type="text" class="form-control" placeholder="Last Name" name="lname" id="lname" required />
+                            </div>
+                           
+
+                          
+                            <br>
+                            <label>Enter Date of Birth in Required Format </label>
+                            <input type="text" class="form-control" id="inputmask-date" name="dob"  placeholder="dd.mm.yyyy">
+              
+
+                            <br>
+                            <div class="form-group mb-0">
+                                <input type="email" required class="form-control" name="email" id="email" placeholder="Email">
+                            </div>
+                            <br>
+
 
                             <br>
 
@@ -144,6 +150,9 @@
         <script src="{{ asset('assets/plugins/bootstrap-inputmask/jquery.inputmask.bundle.min.js') }}"></script>
         <script src="{{ asset('assets/js/custom/custom-form-inputmask.js') }}"></script>
         <script src="{{ asset('assets/plugins/select2/select2.min.js') }}"></script>
+        <!-- Input Mask js -->
+        <script src="{{ asset('assets/plugins/bootstrap-inputmask/jquery.inputmask.bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/js/custom/custom-form-inputmask.js') }}"></script>
 
         @yield('script')
 
@@ -171,41 +180,48 @@
     });
 
     function updateinput() {
+
         var pat = ($('#pat').val());
+        var code = ($('#code').val());
+
+
         $.ajax({
             type: "POST",
             url: "{{ route('get_patient') }}",
             data: {
                 '_token': $('input[name=_token]').val(),
-                'pat': pat
+                'pat': pat,
+                'code': code
             },
 
         }).done(function(data) {
-            $('#fname').val(data.first_name);
-            $('#lname').val(data.last_name);
-            $('#autoclose-date').val(data.date_of_birth);
-            $('#autoclose-date').datepicker('update', data.date_of_birth);
+            if (data.first_name != null) {
+                $('#fname').val(data.first_name);
+                $('#lname').val(data.last_name);
+                $('#autoclose-date').val(data.date_of_birth);
+                $('#autoclose-date').datepicker('update', data.date_of_birth);
 
-            $("#date_input").val(data.date_of_birth);
-            $('#email').val(data.email);
-            $('#address').val(data.address);
-            phone = ""
-            code = ""
-            for ($i = 0; $i < data.phone.length; $i++) {
-                if ($i < 2) {
-                    code += data.phone[$i];
+                $("#inputmask-date").val(data.date_of_birth);
+                $('#email').val(data.email);
+                $('#address').val(data.address);
+                phone = ""
+                code = ""
+                for ($i = 0; $i < data.phone.length; $i++) {
+                    if ($i < 2) {
+                        code += data.phone[$i];
 
 
-                } else {
-                    phone += data.phone[$i];
+                    } else {
+                        phone += data.phone[$i];
 
+                    }
                 }
+
+                $('#code').val(code);
+                console.log($('#code').val() == code);
+                $('#phone').val(phone);
+
             }
-
-            $('#code').val(code);
-            console.log($('#code').val() == code);
-            $('#phone').val(phone);
-
         });
 
     }

@@ -6,7 +6,7 @@
 "use strict";
 $(document).ready(function() {
     /* -- Form - Input Mask -- */
-    $('#inputmask-date').inputmask("date");
+    $('#inputmask-date').inputmask("99.99.9999");
     $('#inputmask-time').inputmask("hh:mm");
     $('#inputmask-datetime').inputmask("datetime");
     $('#inputmask-phone').inputmask("(99) 999-999-9999");

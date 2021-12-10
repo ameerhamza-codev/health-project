@@ -97,7 +97,31 @@ try {
     <div class="alert alert-success">
         {{ session('meeting-success') }}
     </div>
+
+    <script>
+         showNotification( "{{ session('meeting-success') }}",'Meeting Alert');
+         function showNotification($name, $message) {
+        
+        const notification = new Notification($message, {
+            body: $name ,
+        })
+        notification.onclick = (e) => {
+            window.location.href = "{{env('APP_URL')}}/notif";
+        };
+    }
+    </script>
+    
     @endif
+    @if(session('meeting-error'))
+    <br>
+    <div class="alert alert-danger">
+        {{ session('meeting-error') }}
+    </div>
+    <script>
+            showNotification( "{{ session('meeting-error') }}",'Meeting Alert');
+         
+    </script>
+@endif
 </div>
 
 
@@ -211,11 +235,19 @@ try {
                                         <!-- <td><button type="button" class="btn btn-danger px-5" disabled><i class="feather icon-x mr-2"></i>Fail</button></td> -->
 
                                         <td>
-                                            <select class="select2-single form-control" onchange="changecolor()" id="testselect" name="test_status" required>
-
-                                                <option value="{{$patient->result}}" selected hidden> {{__($patient->result)}}</option>
-
-                                                <option value="On Hold" class="btn-warning"><span class="btn-primary">{{__('On Hold')}}</span></option>
+                                            @if(__($patient->result) == __('On Hold'))
+                                            <select class="select2-single form-control" style="background-color: #F9A800;" id="testselect" name="test_status" required>
+                                            @elseif(__($patient->result) == __('Success'))
+                                            <select class="select2-single form-control" style="background-color: #54BC5E;" id="testselect" name="test_status" required>
+                                            @elseif(__($patient->result) == __('Fail'))
+                                            <select class="select2-single form-control" style="background-color: #F13C40;" id="testselect" name="test_status" required>
+                                            @else
+                                            <select class="select2-single form-control" id="testselect" name="test_status" required>
+                                            @endif
+                                                
+                                                <option value="{{$patient->result}}"  selected hidden> {{__($patient->result)}}</option>
+                                                
+                                                <option value="On Hold" class="btn-warning"  ><span class="btn-primary">{{__('On Hold')}}</span></option>
                                                 <option value="Fail" class="btn-danger"><span class="btn-danger">{{__('Fail')}}</span></option>
                                                 <option value="Success" class="btn-success"><span class="btn-success">{{__('Success')}}</span></option>
 
@@ -346,7 +378,7 @@ try {
 
                             <h6> Date And Time</h6>
                             <div class="input-group">
-                                <input type="text" id="time-format" required name="date" class="form-control" placeholder="dd/mm/yyyy - hh:ii aa" aria-describedby="basic-addon5" />
+                                <input type="text" id="time-format4" required name="date" class="form-control" placeholder="dd/mm/yyyy - hh:ii aa" aria-describedby="basic-addon5" />
                                 <div class="input-group-append">
                                     <span class="input-group-text" id="basic-addon5"><i class="feather icon-calendar"></i></span>
                                 </div>
@@ -513,7 +545,7 @@ try {
 <script src="{{ asset('assets/js/custom/custom-calender.js') }}"></script>
 
 <script>
-    changecolor();
+    
 
     function changecolor() {
         var x = document.getElementById("testselect");
@@ -534,7 +566,7 @@ try {
         }
         $.ajax({
             type: "POST",
-            url: "{{ route('get_patient') }}",
+            url: "{{ route('get_patient2') }}",
             data: {
                 '_token': $('input[name=_token]').val(),
                 'pat': pat
@@ -647,6 +679,7 @@ try {
         selectable: true,
         snapDuration: '00:10:00'
     });
+   
 
     $(document).ready(function() {
         $('#time-format2').datepicker({
@@ -654,15 +687,22 @@ try {
             dateFormat: 'yyyy/mm/dd',
             timeFormat: 'hh:ii',
             timepicker: true,
-            dateTimeSeparator: ' T '
+            dateTimeSeparator: '  '
         });
 
+        $('#time-format4').datepicker({
+            language: 'en',
+            dateFormat: 'yyyy/mm/dd',
+            timeFormat: 'hh:ii',
+            timepicker: true,
+            dateTimeSeparator: '  '
+        });
         $('#ev_date').datepicker({
             language: 'en',
             dateFormat: 'yyyy/mm/dd',
             timeFormat: 'hh:ii',
             timepicker: true,
-            dateTimeSeparator: ' T '
+            dateTimeSeparator: '  '
         });
 
 
@@ -682,7 +722,7 @@ try {
                 name: name,
                 date: date,
                 ev_url: calendly[i]['join_url'],
-                allDay: true
+               
             }, true);
         }
 

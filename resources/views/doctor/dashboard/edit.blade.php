@@ -29,11 +29,13 @@ App::setLocale(Session('app_locale'));
             </div>
 
         </div>
+        @if(auth()->user()->roles()->pluck('id')[0] == 1)
         <div class="col-md-6 col-lg-6">
             <div class="widgetbar">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#UserModalCenter"><i class="feather icon-plus mr-2"></i>Add User</button>
             </div>
         </div>
+        @endif
     </div>
     @if(session('success'))
     <br>
@@ -76,7 +78,7 @@ App::setLocale(Session('app_locale'));
                                 </tr>
                             </thead>
                             <tbody>
-                                
+                            @if(auth()->user()->roles()->pluck('id')[0] == 1)
                                 @foreach($users as $user)
                                 <form action="{{ route('doctor.update')}}" id="edit-form" method="POST">
                                     @csrf
@@ -110,6 +112,32 @@ App::setLocale(Session('app_locale'));
                                 </tr>
                                 </form>
                                 @endforeach
+                                
+                                @elseif (auth()->user()->roles()->pluck('id')[0] == 2)
+                                <form action="{{ route('doctor.update')}}" id="edit-form" method="POST">
+                                    @csrf
+                                <tr>
+                                    <input type="hidden" name="id" value="{{auth()->user()->id}}">
+                                    <td class="text-dark">
+                                        <input name="name" value="{{auth()->user()->name}}">
+                                    </td>
+                                    <td class="text-dark">
+                                        <input name="phone" value="{{auth()->user()->phone}}">
+                                    </td>
+                                    <input type="hidden" name="role" value="{{auth()->user()->roles()->pluck('id')[0]}}">
+                                    <td class="text-dark">
+                                    {{auth()->user()->roles()->pluck('name')[0]}}
+                                    </td>
+                                    <input type="hidden" id="delete" name="delete" value="0">
+                                    <td class="text-dark">
+                                        {{passwrod_user::Where('user_id',auth()->user()->id)->first()->password}}</td>
+                                    <td class="text-dark">
+                                        <button type="submit" class="btn btn-outline-success"><i class="feather icon-check"></i></button>
+                                     </td>
+                                </tr>
+                                </form>
+                                @endif
+
                             </tbody>
 
                         </table>

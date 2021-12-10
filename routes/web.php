@@ -88,6 +88,7 @@ Route::post('/update_meeting',"ZoomController@update")->name('meeting.update');
 Route::post('/patientcheck', 'PatientController@check')->name('checkno');
 
 Route::post('/patient-area/update','PatientController@get_patient')->name('get_patient');
+Route::post('/patient-area/update2','PatientController@get_patient2')->name('get_patient2');
 
 Route::post('/generate-csv','SettingsController@generateCSV')->name('generateCSV');
 Route::get('/bulk-csv','SettingsController@bulkCSV')->name('bulk-generate');
