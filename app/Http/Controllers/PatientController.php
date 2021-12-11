@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use App\ZoomMeetings;
 use Illuminate\Support\Facades\Redirect;
 use App\Events\meeting;
+use App\Http\Controllers\notifController;
 
 class PatientController extends Controller
 {
@@ -26,56 +27,56 @@ class PatientController extends Controller
     public function store(Request $request)
     {
 
-        
-            
-        
+
+
+
         $patient = new Patient();
         $patient->first_name = $request->fname;
         $patient->last_name = $request->lname;
         $patient->email = $request->email;
         $patient->phone = $request->code . $request->phone;
-        
-        if($request->dob ==null){
+
+        if ($request->dob == null) {
             $patient->date_of_birth = $request->dob1;
-        }
-        else{
+        } else {
             $patient->date_of_birth = $request->dob;
         }
-        if(strpos($patient->date_of_birth,'/')==true || substr_count($patient->date_of_birth, '.')!=2){
-           
+        if (strpos($patient->date_of_birth, '/') == true || substr_count($patient->date_of_birth, '.') != 2) {
+
             return redirect()->back()->with('error', 'Enter Date of Birth in dd.MM.YY Format');
         }
 
         $patient->save();
+
         Session(['patient' => $patient->id]);
         //event(new meeting($patient));
-        
+        $notif = new notifController();
+        $notif->createnotifurl('New Patient', $patient->first_name . ' is waiting for appointment', env('APP_URL') . '/notif');
         return redirect('/timer');
     }
     public function check(Request $request)
     {
-        
-        $p =Patient::all();
-        $c=$p->count();
-        $e=Patient::all()->sortByDesc('id')->first();
-        if($request->prev < $c){
+
+        $p = Patient::all();
+        $c = $p->count();
+        $e = Patient::all()->sortByDesc('id')->first();
+        if ($request->prev < $c) {
             return response()->json(['name' => $e->first_name, 'count' => $c]);
-        }
-        else{
+        } else {
             return response()->json(['count' => $c]);
         }
     }
 
     public function get_patient(Request $request)
     {
-        $patient = Patient::Where('phone', $request->code.$request->pat)->first();
-        
+        $patient = Patient::Where('phone', $request->code . $request->pat)->first();
+
         return response()->json($patient);
     }
     public function get_patient2(Request $request)
     {
         $patient = Patient::Where('id', $request->pat)->first();
-        
+
         return response()->json($patient);
     }
 
@@ -83,17 +84,15 @@ class PatientController extends Controller
     public function status()
     {
         $patient = Patient::find(Session('patient'));
-        
-       
-        if ($patient->test_status !=null) {
-            
-            $meet = ZoomMeetings::where('id',$patient->test_status)->first();
+
+
+        if ($patient->test_status != null) {
+
+            $meet = ZoomMeetings::where('id', $patient->test_status)->first();
             echo ($meet->join_url);
-            
         } else {
             echo "null";
         }
-        
     }
 
     public function upload(Request $request)

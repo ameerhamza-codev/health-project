@@ -7,7 +7,8 @@
 $(document).ready(function() {
     /* -- Table - Datatable -- */
     $('#datatable').DataTable({
-        responsive: true
+        responsive: true,
+        filter: false,
     });
     $('#default-datatable').DataTable( {
         "order": [[ 3, "desc" ]],

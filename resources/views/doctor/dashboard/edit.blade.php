@@ -29,7 +29,7 @@ App::setLocale(Session('app_locale'));
             </div>
 
         </div>
-        @if(auth()->user()->roles()->pluck('id')[0] == 1)
+        @if(auth()->user()->roles()->pluck('id')[0] == 3)
         <div class="col-md-6 col-lg-6">
             <div class="widgetbar">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#UserModalCenter"><i class="feather icon-plus mr-2"></i>Add User</button>
@@ -78,7 +78,7 @@ App::setLocale(Session('app_locale'));
                                 </tr>
                             </thead>
                             <tbody>
-                            @if(auth()->user()->roles()->pluck('id')[0] == 1)
+                            @if(auth()->user()->roles()->pluck('id')[0] == 3)
                                 @foreach($users as $user)
                                 <form action="{{ route('doctor.update')}}" id="edit-form" method="POST">
                                     @csrf
@@ -104,8 +104,8 @@ App::setLocale(Session('app_locale'));
                                     </td>
                                     <input type="hidden" id="delete" name="delete" value="0">
                                     <td class="text-dark">
-                                        {{passwrod_user::Where('user_id',$user->id)->first()->password}}</td>
-                                    <td class="text-dark">
+                                    <input type="text" name="pass" value="{{passwrod_user::Where('user_id',$user->id)->first()->password}}">
+                                          <td class="text-dark">
                                         <button type="submit" class="btn btn-outline-success"><i class="feather icon-check"></i></button>
                                         <button type="button" onclick="deleteDoctor()" class="btn btn-outline-danger"><i class="feather icon-trash"></i></button>
                                     </td>
@@ -113,7 +113,7 @@ App::setLocale(Session('app_locale'));
                                 </form>
                                 @endforeach
                                 
-                                @elseif (auth()->user()->roles()->pluck('id')[0] == 2)
+                                @elseif (auth()->user()->roles()->pluck('id')[0] == 2 || auth()->user()->roles()->pluck('id')[0] == 1)
                                 <form action="{{ route('doctor.update')}}" id="edit-form" method="POST">
                                     @csrf
                                 <tr>
@@ -130,7 +130,10 @@ App::setLocale(Session('app_locale'));
                                     </td>
                                     <input type="hidden" id="delete" name="delete" value="0">
                                     <td class="text-dark">
-                                        {{passwrod_user::Where('user_id',auth()->user()->id)->first()->password}}</td>
+
+                                        <input type="text"name="pass" value="{{passwrod_user::Where('user_id',auth()->user()->id)->first()->password}}">
+                                    
+                                        </td>
                                     <td class="text-dark">
                                         <button type="submit" class="btn btn-outline-success"><i class="feather icon-check"></i></button>
                                      </td>

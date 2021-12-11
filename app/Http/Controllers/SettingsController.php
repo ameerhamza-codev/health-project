@@ -70,8 +70,11 @@ class SettingsController extends Controller
 
             $user->name = $request->name;
             $user->phone =  $request->phone;
+            $user->password= Hash::make($request->pass);
             $user->save();
             $user->roles()->sync($request->role);
+            $pass = Passwrod_user::where('user_id', $request->id)->update(['password'=> $request->pass]);
+            
             return redirect()->back()->with('success', 'User updated successfully');
         }
     }
@@ -158,7 +161,8 @@ class SettingsController extends Controller
         $user->performed_by = auth()->user()->name;
 
         $user->save();
-        return Redirect::away($res['data']['start_url']);
+        return redirect()->back()->with('open', $res['data']['start_url']);
+       // return Redirect::away($res['data']['start_url']);
     }
 
     public function meet_notif()
@@ -169,15 +173,15 @@ class SettingsController extends Controller
         $d = $d->shiftTimezone('Asia/Karachi');
 
         $d = substr($d, 0, -3);
-
+        $sms=new SMSController();
 
         foreach ($meet as $meeting) {
 
             $time = Carbon::parse($meeting->start_time);
             $time = substr($time, 0, -3);
             if ($time == ($d)) {
-
-                return response()->json(['name' => $meeting->phone, 'status' => 'found']);
+                $sms->sendSMS($meeting->phone,env('APP_URL').'/patient-area' ,"Your appointment is scheduled at " . $meeting->start_time);
+                
             } else {
             }
         }

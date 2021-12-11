@@ -43,19 +43,6 @@
                                 </a>
                             </div>
                         </li>
-                        <li class="list-inline-item">
-                            <div class="searchbar">
-                                <form>
-                                    <div class="input-group">
-                                        <input type="search" class="form-control" placeholder="{{__('Search')}}" aria-label="Search" aria-describedby="button-addon2">
-                                        <div class="input-group-append">
-                                            <button class="btn" type="submit" id="button-addon2"><img src="assets/images/svg-icon/search.svg" class="img-fluid" alt="search"></button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                        </li>
 
 
 
@@ -83,7 +70,7 @@
                     
                         <select id="lang" onchange="chnge()" style="background-color: lightgrey;" class="select2-single form-control" required>
                             <optgroup>
-                                <option disabled hidden selected>{{Session('app_locale')}}</option>
+                                <option disabled hidden selected>{{Config::get('app.locale')}}</option>
                                 <option  value="en">En</option>
                                 <option  value="fr">Fr</option>
 

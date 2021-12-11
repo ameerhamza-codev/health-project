@@ -4697,7 +4697,7 @@ mark {
   width: auto;
   height: auto;
   margin: 0;
-  overflow: visible;
+  overflow: hidden;
   clip: auto;
 }
 
@@ -31566,7 +31566,7 @@ input[type=range]:focus {
   margin: 30px 0;
   border-radius: 3px;
   min-height: 250px;
-  overflow: scroll;
+  overflow: hidden;
   position: relative;
   border: 1px solid rgba(0, 0, 0, 0.03);
 }
@@ -33808,6 +33808,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before {
   height: 18px;
   width: 18px;
   line-height: 18px;
+  overflow: auto;
 }
 table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
   background-color: #0080ff;

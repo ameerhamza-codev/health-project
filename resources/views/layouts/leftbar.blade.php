@@ -19,6 +19,12 @@
 
                 </li>
                 <li>
+                    <a href="{{url('/test-status')}}">
+                        <img src="assets/images/svg-icon/tables.svg" class="img-fluid" alt="dashboard"><span>{{__('Test Status')}}</span>
+                    </a>
+
+                </li>
+                <li>
                     <a href="{{url('/notif')}}">
                         <img src="assets/images/svg-icon/notifications.svg" class="img-fluid" alt="dashboard"><span>{{__('Notifications')}}</span>
                     </a>

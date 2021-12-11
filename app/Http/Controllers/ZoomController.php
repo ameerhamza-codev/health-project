@@ -11,10 +11,13 @@ use App\Http\Controllers\SMSController;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\NodeVisitor\FirstFindingVisitor;
 use Twilio\Page;
+use App\Http\Controllers\notifController;
+use DateTime;
+use DateTimeZone;
 
 class ZoomController extends Controller
 {
-    
+
     public $client;
     public $jwt;
     public $headers;
@@ -29,7 +32,7 @@ class ZoomController extends Controller
         $this->client = new Client();
         $this->jwt = $this->generateZoomToken();
         $this->headers = [
-            'Authorization' => 'Bearer '.$this->jwt,
+            'Authorization' => 'Bearer ' . $this->jwt,
             'Content-Type'  => 'application/json',
             'Accept'        => 'application/json',
         ];
@@ -59,13 +62,13 @@ class ZoomController extends Controller
 
             return $date->format('Y-m-d\TH:i:s');
         } catch (\Exception $e) {
-            Log::error('ZoomJWT->toZoomTimeFormat : '.$e->getMessage());
+            Log::error('ZoomJWT->toZoomTimeFormat : ' . $e->getMessage());
 
             return '';
         }
     }
 
-    
+
     public function create($data)
     {
         $path = 'users/me/meetings';
@@ -77,8 +80,8 @@ class ZoomController extends Controller
                 'topic'      => $data['topic'],
                 'type'       => self::MEETING_TYPE_SCHEDULE,
                 'start_time' => $this->toZoomTimeFormat($data['start_time']),
-                'agenda'     => (! empty($data['agenda'])) ? $data['agenda'] : null,
-                'timezone'     => 'Asia/Kolkata',
+                'agenda'     => (!empty($data['agenda'])) ? $data['agenda'] : null,
+                'timezone'     => 'Asia/Karachi',
                 'settings'   => [
                     'host_video'        => ($data['host_video'] == "1") ? true : false,
                     'participant_video' => ($data['participant_video'] == "1") ? true : false,
@@ -87,7 +90,7 @@ class ZoomController extends Controller
             ]),
         ];
 
-        $response =  $this->client->post($url.$path, $body);
+        $response =  $this->client->post($url . $path, $body);
 
         return [
             'success' => $response->getStatusCode() === 201,
@@ -97,112 +100,92 @@ class ZoomController extends Controller
 
     public function index()
     {
-        //return redirect()->away("https://us04web.zoom.us/wc/join/73561262755?pwd=czAycTJQZVF1RXA2QmxjMExFYWFhUT09");
-        
-        if(Auth::check()){
-           
-        // $path = 'users/me/meetings?page_size=300';
-        // $url = $this->retrieveZoomUrl();
-        // $body = [
-        //     'headers' => $this->headers,
-        //     "page_size"=>100,
-        // ];
-        // $response =  $this->client->get($url.$path, $body);
-        
-        
-        // $data = json_decode($response->getBody(), true);
-        // $r=[];
-        // $count=0;
-        // for($i=0;$i<count($data['meetings']);$i++){
-
-        //     if(strpos($data['meetings'][$i]['topic'],env('MEETING_NAME', '')) !== false){
-               
-        //         $r=array_add($r,$count,$data['meetings'][$i]);
-        //         $count++;
-             
-        //     }
-
-        // }
-        
-       
-       
-        
-        
-        
-            
-        $zoom= ZoomMeetings::all();
-        return view('zoom.index',compact('zoom'));
-        }else{
-            return redirect('/');
-        }
-        
-
+        return view('zoom.index');
     }
 
     public function update(Request $request)
     {
         $matchThese = ['start_time' => $request->time, 'phone' => $request->phone];
-        $zoom2= ZoomMeetings::where($matchThese)->get();
+        $zoom2 = ZoomMeetings::where($matchThese)->get();
         //$zoom2= ZoomMeetings::where('start_time','=',$request->time)->get();
-        if(isset($zoom2[0])){
-        
-        
-        $id=($zoom2[0]->id);
-        $upzoom= ZoomMeetings::find($id);
-        $upzoom->start_time=$request->time2;
-        $upzoom->save();
-        $sms=new SMSController();
-        $sms->sendSMS($request->phone,env('APP_URL','').'/patient-area',$request->time2);
+        if (isset($zoom2[0])) {
+            $time=new DateTime($request->time2,new DateTimeZone('Asia/Karachi'));
+            //$time->setTimezone(new DateTimeZone('UTC'));
+            $time=$time->format('Y-m-d H:i');
+            $notif = new notifController();
+
+            $id = ($zoom2[0]->id);
+            $upzoom = ZoomMeetings::find($id);
+            $upzoom->start_time = $request->time2;
+            $upzoom->save();
+            $sms = new SMSController();
+            $sms->sendSMS($request->phone, env('APP_URL', '') . '/patient-area', $request->time2);
+            $notif->createnotif('Meeting Created', $request->code . $request->phone);
+            $notif->createnotifdate('Upcomming Meeting', $request->code . $request->phone, $time);
+
         }
         return redirect()->back();
     }
     public function store(Request $request)
-    {   
+    {
 
-        $sms= new SMSController();
+        $sms = new SMSController();
+        $notif = new notifController();
         
-        if($request->send=='true'){
-            if($sms->sendSMS($request->code.$request->phone,env('APP_URL','').'/patient-area',$request->date)==1){
+        $time=new DateTime($request->date,new DateTimeZone('Asia/Karachi'));
+        //$time->setTimezone(new DateTimeZone('UTC'));
+        $time=$time->format('Y-m-d H:i');
+        
+        if ($request->send == 'true')   {
+            if ($sms->sendSMS($request->code . $request->phone, env('APP_URL', '') . '/patient-area', $request->date) == 1) {
+                $notif->createnotif('Meeting Created', $request->code . $request->phone);
+                $notif->createnotifdate('Upcomming Meeting', $request->code . $request->phone, $time);
 
-            return redirect()->back()->with('meeting-success','Meeting Created Successfully');
-            }
-            else{
-                return redirect()->back()->with('meeting-error','Error in sending SMS');
+
+                return redirect()->back()->with('meeting-success', 'Meeting Created Successfully');
+            } else {
+
+                $notif->createnotif('SMS not Sent', $request->code . $request->phone);
+                $notif->createnotifdate('Upcomming Meeting', $request->code . $request->phone, $time);
+
+               
+                return redirect()->back()->with('meeting-error', 'Error in sending SMS');
             }
             
-        }
-        elseif($request->add=='true'){
+        } elseif ($request->add == 'true') {
             $todate = date('Y-m-d H:i:s');
-            $meeting_dates= ZoomMeetings::all();
-         
-            
+            $meeting_dates = ZoomMeetings::all();
+
+
             foreach ($meeting_dates as $key) {
-                if(strtotime($key->start_time)<strtotime($todate)){
-                    
-                   ZoomMeetings::find($key->id)->delete();
+                if (strtotime($key->start_time) < strtotime($todate)) {
+
+                    ZoomMeetings::find($key->id)->delete();
                 }
-            }
-            
-    
-    
-            $meeting=new ZoomMeetings();
-            $meeting->start_time=$request->date;
-            $meeting->phone=$request->code.$request->phone;
+    }
+
+
+
+            $meeting = new ZoomMeetings();
+            $meeting->start_time = $request->date;
+            $meeting->phone = $request->code . $request->phone;
             $meeting->save();
-        
-            if($sms->sendSMS($meeting->phone,env('APP_URL','').'/patient-area',$meeting->start_time)==1){
-                return redirect()->back()->with('meeting-success','Meeting Created Successfully');
+            if ($sms->sendSMS($request->code . $request->phone, env('APP_URL', '') . '/patient-area', $request->date) == 1) {
+                $notif->createnotif('Meeting Created', $request->code . $request->phone);
+                $notif->createnotifdate('Upcomming Meeting', $request->code . $request->phone, $time);
+
+
+                return redirect()->back()->with('meeting-success', 'Meeting Created Successfully');
+            } else {
+
+                $notif->createnotif('SMS not Sent', $request->code . $request->phone);
+                $notif->createnotifdate('Upcomming Meeting', $request->code . $request->phone, $time);
+
+                return redirect()->back()->with('meeting-error', 'Error in sending SMS');
             }
-            else{
-                return redirect()->back()->with('meeting-error','Error in sending SMS');
-            }
-            
-            
-            //return redirect()->back()->with('meeting-success','Meeting Added to Calender Successfully');
+
+            //return redirect()->back()->with('meeting-success','Meeting Added to  Successfully');
 
         }
-       
-        
-
     }
 }

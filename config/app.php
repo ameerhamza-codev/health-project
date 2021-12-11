@@ -144,6 +144,8 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
+        
+        Ladumor\OneSignal\OneSignalServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Spatie\GoogleCalendar\GoogleCalendarServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
@@ -196,6 +198,7 @@ return [
 
     'aliases' => [
 
+        'OneSignal' => \Ladumor\OneSignal\OneSignal::class,
         'GoogleCalendar' => Spatie\GoogleCalendar\GoogleCalendarFacade::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
