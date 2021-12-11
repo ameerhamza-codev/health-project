@@ -20,7 +20,18 @@ $patient= Patient::all()->sortByDesc('id');
 App::setLocale(Session('app_locale'));
 
 
+
 ?>
+
+@if(Session('open'))
+<a hidden id="zoom_url" href="{{Session('open')}}" target="_blank">
+</a>
+<script>
+    let newTab = window.open();
+    newTab.location.href = "{{Session('open')}}"
+    
+</script>
+@endif
 <div class="breadcrumbbar">
     <div class="row align-items-center">
         <div class="col-md-6 col-lg-6 ">
