@@ -28,16 +28,17 @@ App::setLocale(Session('app_locale'));
 <a hidden id="zoom_url" href="{{Session('open')}}" target="_blank">
 </a>
 <script>
-    var myWindow = window.open("about:blank",'name','height=500,width=550');
+    var myWindow = window.open("about:blank", 'name', 'height=500,width=550');
+
     function showWindow(win, url) {
-    win.open(url,'name','height=500,width=550');
-}
+        win.open(url, 'name', 'height=500,width=550');
+    }
     // $('zoom_url').trigger('click');
-  //document.getElementById('zoom_url').trigger('click');
-//     d.onclick = () => {
-//         window.open("{{Session('open')}}");
-//     };
-//     d.click();
+    //document.getElementById('zoom_url').trigger('click');
+    //     d.onclick = () => {
+    //         window.open("{{Session('open')}}");
+    //     };
+    //     d.click();
     // let newTab = window.open();
     // newTab.location.href = "{{Session('open')}}"
 </script>
@@ -87,7 +88,7 @@ App::setLocale(Session('app_locale'));
                                         <td class="text-dark">{{$patient->first_name}} {{$patient->last_name}}</td>
                                         <td class="text-dark">{{$patient->created_at}}</td>
                                         @if($patient->test_status == null)
-                                        <td> <button type="button" onclick="asses()" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Access Test')}}</button></td>
+                                        <td> <button type="button" data-toggle="modal" data-target=".bd-example-modal-sm" onclick="asses()"  class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Access Test')}}</button></td>
                                         @endif
 
                                 </tr>
@@ -115,6 +116,17 @@ App::setLocale(Session('app_locale'));
     <!-- End row -->
 </div>
 
+<div class="modal fade bd-example-modal-sm" id="smallload" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <button class="btn btn-primary" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="sr-only"></span>
+                </button>
+            </div>
+        </div>
+</div>
+
 <!-- End Contentbar -->
 @endsection
 @section('script')
@@ -135,24 +147,28 @@ App::setLocale(Session('app_locale'));
 
 
 <script>
-    function asses(){
+    function asses() {
+
+        $('#smallload').modal('show');
+        setTimeout(function() {
+            $('#smallload').modal('hide');
+        }, 3000);
         $.ajax({
             url: "{{ route('accept_session') }}",
             type: "POST",
-           
+
             data: {
                 '_token': "{{ csrf_token() }}",
                 'id': $('input[name=id]').val(),
             },
             success: function(data) {
-               
-                    window.open(data.url, '_blank');
-                    console.log(data.url);
-                     
-                
+
+                window.open(data.url, '_blank');
+                console.log(data.url);
+
+
             },
-            async: false
-    });
+        });
     }
 </script>
 @endsection

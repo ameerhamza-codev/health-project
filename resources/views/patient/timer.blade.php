@@ -146,7 +146,8 @@ function schedule(Schedule $schedule)
                         <button type="button" class="btn btn-primary" id="sa-success">Submit</button>
                     </div> -->
                     <div class="px-5">
-                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+
+                        <button type="submit" data-toggle="modal" data-target=".bd-example-modal-sm" class="btn btn-primary btn-sm">Submit</button>
                     </div>
                 </form>
                 <br>
@@ -154,6 +155,16 @@ function schedule(Schedule $schedule)
 
 
 
+        </div>
+    </div>
+    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <button class="btn btn-primary" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="sr-only">Uploading...</span>
+                </button>
+            </div>
         </div>
     </div>
     <!-- End Containerbar -->
@@ -193,11 +204,16 @@ function schedule(Schedule $schedule)
 
 
 <script>
+    // function load(){
+    //     $('.bd-example-modal-sm').modal('show');
+    //     form.submit();
+    // }
     function doit() {
         $('#exampleModal').modal({
-            'show': true, 'backdrop'
-            : 'static'});
-        
+            'show': true,
+            'backdrop': 'static'
+        });
+
 
 
     }
