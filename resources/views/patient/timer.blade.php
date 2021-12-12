@@ -35,6 +35,7 @@ function schedule(Schedule $schedule)
             z-index: 99999 !important;
         }
     </style>
+    <link href="{{ asset('assets/css/files.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/plugins/datepicker/datepicker.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/plugins/switchery/switchery.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
@@ -79,11 +80,81 @@ function schedule(Schedule $schedule)
         <br>
         <br>
         <br>
-        <a id="meet" target="_blank" style="display: none;" class="btn btn-primary mx-5"> Join Meet </a>
+        <a id="meet" target="_blank" onclick="doit()" style="display: none;" class="btn btn-primary mx-5">Join Meet</a>
+
         <h1 id="tab" style="display: none;">DONOT CLOSE THIS TAB</h1>
 
 
 
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-center" role="document">
+            <div class="modal-content" style="text-align: center; background-color: #F2F5FA;">
+                <br>
+                @if(session('error'))
+                <div class="alert alert-warning" role="alert">
+                    {{ session('error') }}
+                </div>
+                @endif
+                <h5 style="text-align: center;">Add Images</h5>
+
+                <br>
+                <form action="{{ route('patient.upload') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="card-body">
+                        <ul class="nav nav-pills justify-content-center custom-tab-button mb-3" id="pills-tab-button" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="pills-home-tab-button" data-toggle="pill" href="#pills-home-button" role="tab" aria-controls="pills-home-button" aria-selected="true"><span class="tab-btn-icon"></span>Test</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-profile-tab-button" data-toggle="pill" href="#pills-profile-button" role="tab" aria-controls="pills-profile-button" aria-selected="false"><span class="tab-btn-icon"></span>ID Card</a>
+                            </li>
+
+                        </ul>
+
+
+                        <div class="tab-content" id="pills-tabContent-button" style="text-align: center;">
+                            <div class="tab-pane fade show active" id="pills-home-button" role="tabpanel" aria-labelledby="pills-home-tab-button">
+
+
+                                <div class="form-group files color">
+                                    <label>Upload Your File </label>
+                                    <input type="file" name="Test" class="form-control" multiple="">
+                                </div>
+
+
+                            </div>
+                            <div class="tab-pane fade" id="pills-profile-button" role="tabpanel" aria-labelledby="pills-profile-tab-button">
+                                <h6>Front</h6>
+                                <div class="form-group files color">
+                                    <label>Upload Your File </label>
+                                    <input type="file" name="IDFront" class="form-control" multiple="">
+                                </div>
+                                <br>
+                                <h6>Back</h6>
+                                <div class="form-group files color">
+                                    <label>Upload Your File </label>
+                                    <input type="file" name="IDBack" class="form-control" multiple="">
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- <div class="sweet-alert">
+                        <button type="button" class="btn btn-primary" id="sa-success">Submit</button>
+                    </div> -->
+                    <div class="px-5">
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                    </div>
+                </form>
+                <br>
+            </div>
+
+
+
+        </div>
     </div>
     <!-- End Containerbar -->
     <!-- Start JS -->
@@ -119,18 +190,19 @@ function schedule(Schedule $schedule)
     //        window.location.href = "upload"; //will redirect to your blog page (an ex: blog.html)
     //     }, 5000); //will call the function after 2 secs.
 </script>
-<script type="text/javascript">
-    $(window).on('load', function() {
-        $('#theModal').modal('show');
 
-    });
-    $('#theModal').modal({
-        backdrop: 'static',
-        keyboard: false
-    });
-</script>
 
 <script>
+    function doit() {
+        $('#exampleModal').modal({
+            'show': true, 'backdrop'
+            : 'static'});
+        
+
+
+    }
+
+    //document.getElementById("meet").addEventListener("click", function(){  window.location.href = "/upload"; });
 
 
     function sleep(time) {
@@ -147,11 +219,12 @@ function schedule(Schedule $schedule)
                 console.log(data);
                 if (data != 'null') {
                     document.getElementById("meet").style.display = "block";
+
+
                     document.getElementById("tab").style.display = "block";
                     $('#meet').attr('href', data);
                     sleep(10000).then(() => {
 
-                        window.location.href = "upload";
                     });
 
                 }
@@ -164,7 +237,7 @@ function schedule(Schedule $schedule)
 
 
     document.getElementById('demo').innerHTML =
-        05 + ":" + 00;
+        01 + ":" + 30;
     startTimer();
 
 
@@ -196,10 +269,25 @@ function schedule(Schedule $schedule)
         };
         return sec;
     }
-
-
-
-    
 </script>
+
+<script>
+    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+    function upload() {
+
+        $.ajax({
+            url: "{{ route('patient.upload') }}",
+            type: "POST",
+            data: {
+                _token: CSRF_TOKEN,
+                file0: $('#file0').files,
+            },
+            dataType: 'JSON',
+        });
+
+    }
+</script>
+
 
 </html>

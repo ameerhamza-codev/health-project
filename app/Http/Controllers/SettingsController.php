@@ -161,8 +161,10 @@ class SettingsController extends Controller
         $user->performed_by = auth()->user()->name;
 
         $user->save();
-        return redirect()->back()->with('open', $res['data']['start_url']);
-       // return Redirect::away($res['data']['start_url']);
+        return response()->json(['url' => $res['data']['start_url']]);
+        //return redirect()->back()->with('open', $res['data']['start_url']);
+       // return redirect()->to($res['data']['start_url']);
+        //return Redirect::away($res['data']['start_url']);
     }
 
     public function meet_notif()
