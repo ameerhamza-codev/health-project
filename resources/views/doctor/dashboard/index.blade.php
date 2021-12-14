@@ -92,7 +92,6 @@ try {
         </div>
         <div class="col-md-6 col-lg-6">
             <div class="widgetbar">
-
                 <button class="btn btn-primary" data-toggle="modal" data-target="#TestLinkModalCenter"><i class="feather icon-plus mr-2"></i>{{__('Generate Test Link')}}</button>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#CalModalCenter"><i class="feather icon-calendar mr-2"></i>{{__('Schedule Test')}}</button>
             </div>

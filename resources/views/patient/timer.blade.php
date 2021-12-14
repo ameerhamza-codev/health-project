@@ -204,19 +204,26 @@ function schedule(Schedule $schedule)
 
 
 <script>
+    on = false
     // function load(){
     //     $('.bd-example-modal-sm').modal('show');
     //     form.submit();
     // }
     function doit() {
-        $('#exampleModal').modal({
-            'show': true,
-            'backdrop': 'static'
-        });
 
 
+        on = true;
+        console.log(on);
 
     }
+
+    setInterval(() => {
+    if (on) {
+
+        window.location.href = "{{env('APP_URL')}}/upload";
+        on = false;
+    }
+    }, 1000);
 
     //document.getElementById("meet").addEventListener("click", function(){  window.location.href = "/upload"; });
 
