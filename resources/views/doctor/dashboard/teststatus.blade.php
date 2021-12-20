@@ -61,6 +61,13 @@ $meetingsno = ZoomMeetings::all()->count();
 
             <div class="col-md-8 col-lg-8">
                 <h2 class="page-title">{{__('Test Status')}}</h2>
+                @if(session('error'))
+                <br>
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+
+                @endif
                 <!-- {{auth()->user()->roles()->pluck('name')[0]}} -->
             </div>
 
@@ -81,11 +88,11 @@ $meetingsno = ZoomMeetings::all()->count();
         <div class="col-lg-12">
             <div class="card m-b-30">
 
-        <input id="search" type="text" class="form-control" placeholder="Search..">
+                <input id="search" type="text" class="form-control" placeholder="Search..">
 
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table  class="display table" width="100%" >
+                        <table class="display table" width="100%">
                             <thead>
                                 <tr>
                                     <th>{{__('Name')}}</th>
@@ -104,12 +111,12 @@ $meetingsno = ZoomMeetings::all()->count();
                                 @foreach($patient as $patient)
 
                                 <form method="POST" id="patient_form" action="{{ route('generateCSV') }}">
-                                    <tr class="vari3"> 
+                                    <tr class="vari3">
                                         @csrf
                                         <input type="hidden" name="id" value="{{$patient->id}}">
                                         <input type="hidden" name="generate" id="generate">
 
-                                        <td class="vari" >{{$patient->first_name}} {{$patient->last_name}}</td>
+                                        <td class="vari">{{$patient->first_name}} {{$patient->last_name}}</td>
                                         <td class="vari2">{{$patient->updated_at}}</td>
                                         <td class="vari2">
                                             @if((auth()->user()->name == $patient->performed_by && auth()->user()->roles()->pluck('id')[0] == 1) || auth()->user()->roles()->pluck('id')[0] == 3)
@@ -149,10 +156,9 @@ $meetingsno = ZoomMeetings::all()->count();
                                         <td class="vari2">
                                             @if((auth()->user()->name == $patient->performed_by && auth()->user()->roles()->pluck('id')[0] == 1) || auth()->user()->roles()->pluck('id')[0] == 3)
                                             @if($patient->result == "Success")
-                                            <button type="submit"  class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Generate CSV')}}</button>
+                                            <button type="submit" class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Generate CSV')}}</button>
                                             @else
-                                            <button type="submit" disabled  class="btn btn-secondary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Generate CSV')}}</button>
-                                
+            
                                             @endif
                                             @endif
                                         </td>
@@ -385,23 +391,22 @@ $meetingsno = ZoomMeetings::all()->count();
 <script>
     var items = document.getElementsByClassName("vari");
     var items2 = document.getElementsByClassName("vari3");
-    console.log(items[19 ].innerHTML);
+    console.log(items[19].innerHTML);
 
     $('#search').on('keyup', function() {
         var value = $(this).val();
         for (i = 0; i < items.length; i++) {
             if (items[i].innerHTML.toLowerCase().includes(value.toLowerCase())) {
-                
+
                 items2[i].style.display = "";
             } else {
-                
+
                 items2[i].style.display = "none";
             }
         }
-        
-    }   
-    );
-    
+
+    });
+
     $(document).ready(function() {
         $('#testtable').DataTable();
     });
@@ -479,7 +484,7 @@ $meetingsno = ZoomMeetings::all()->count();
         document.getElementById("patient_form").submit();
 
     }
-   </script>
+</script>
 
 
 

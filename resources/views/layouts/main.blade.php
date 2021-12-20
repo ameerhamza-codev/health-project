@@ -4,8 +4,22 @@
 <?php
 
 use Illuminate\Support\Facades\App;
+use Symfony\Component\HttpFoundation\Request;
+use GuzzleHttp\Client;
 
-App::setLocale(Session('app_locale'));
+
+$client=new Client();
+$res = $client->get('http://ip-api.com/json/');
+
+$response=$res->getBody();
+$response=json_decode($response->getContents());
+//dd($response->countryCode);
+if($response->countryCode=='FR'){
+    App::setLocale('fr');}
+else{
+    App::setLocale('en');
+}
+
 ?>
 <html lang="en">
 

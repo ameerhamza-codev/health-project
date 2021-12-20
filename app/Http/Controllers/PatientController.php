@@ -40,6 +40,11 @@ class PatientController extends Controller
 
             return redirect()->back()->with('error', 'Enter Date of Birth in dd.MM.YY Format');
         }
+        $lastdate=substr($patient->date_of_birth, -4);
+        if ($lastdate > date('Y')) {
+            return redirect()->back()->with('error', 'Enter Valid Date of Birth');
+        }
+
 
         $patient->save();
         $patient->room = "room_".md5(uniqid($patient->id, true));

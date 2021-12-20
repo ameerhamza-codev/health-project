@@ -66,19 +66,6 @@
                 </li>
                 <li class="list-inline-item" style="float: right; margin-top: 10px; margin-right:10px;">
                     
-                    <div class="profilebar">
-                    
-                        <select id="lang" onchange="chnge()" style="background-color: lightgrey;" class="select2-single form-control" required>
-                            <optgroup>
-                                <option disabled hidden selected>{{Config::get('app.locale')}}</option>
-                                <option  value="en">En</option>
-                                <option  value="fr">Fr</option>
-
-                            </optgroup>
-
-                        </select>
-                    
-                    </div>
                 </li>
             </div>
             <!-- End col -->

@@ -36,7 +36,7 @@ try {
     $response =  $zmc->client->get($url . $path, $body);
     $data = json_decode($response->getBody(), true);
     $count = 0;
-    
+
     for ($i = 0; $i < count($data['meetings']); $i++) {
 
         if (strpos($data['meetings'][$i]['topic'], env('MEETING_NAME', '')) !== false) {
@@ -62,8 +62,12 @@ try {
     .datepicker {
         z-index: 9999999 !important;
     }
+    .select2{
+        z-index: 9999999 !important;
+    }
 </style>
 
+<link href="{{ asset('assets/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/css/bootstrap-clockpicker.min.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('assets/plugins/fullcalendar/css/fullcalendar.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/plugins/datepicker/datepicker.min.css') }}" rel="stylesheet" type="text/css">
@@ -186,6 +190,13 @@ try {
                     <div class="row align-items-center">
                         <div class="col-9">
                             <h5 class="card-title mb-0">{{__('Patients Status')}}</h5>
+                            @if(session('error'))
+                            <br>
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
+                            </div>
+
+                            @endif
                         </div>
                         <div class="col-3">
 
@@ -343,7 +354,7 @@ try {
     <!-- End col -->
 
     <!-- Modal -->
-    <div class="modal fade" id="TestLinkModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="TestLinkModalCenter" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -358,7 +369,7 @@ try {
                     <form action="{{route('zoom.store')}}" method="POST">
                         @csrf
 
-                        <select class="select2-single form-control" id="pat" onChange="updateinput();" name="pat">
+                        <select class="form-control" id="pat" onChange="updateinput();" name="pat">
                             <optgroup>
                                 <option value="" disabled selected hidden>{{__('Select Already Registered Patient')}}</option>
                                 @foreach($patient2->unique('email') as $pat)
@@ -425,7 +436,7 @@ try {
                         <div id='calendarFull'></div>
                     </div>
 
-                    <div class="modal fade" id="event-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="event-modal"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content shadow" style="background-color: #F2F5FA;">
                                 <form action="{{route('zoom.store')}}" method="POST">
@@ -433,7 +444,7 @@ try {
                                     <div class="modal-body">
                                         <form name="save-event">
                                             <div class="form-group">
-                                                <select class="select2-single form-control" id="pat2" onChange="updateinput();" name="pat">
+                                                <select class="form-control" id="pat2" onChange="updateinput();" name="pat">
                                                     <optgroup>
                                                         <option value="" disabled selected hidden>{{__('Select Already Registered Patient')}}</option>
                                                         @foreach($patient2->unique('email') as $pat)
@@ -571,6 +582,14 @@ try {
             }
         }
 
+
+        function updateinput2() {
+            var pat = ($('#pp').val());
+            console.log(pat);
+
+        }
+
+
         function updateinput() {
             var pat = ($('#pat').val());
             if (pat == null) {
@@ -694,6 +713,8 @@ try {
 
 
         $(document).ready(function() {
+            $("#pat").select2();
+            $('#pat2').select2();
             $('#time-format2').datepicker({
                 language: 'en',
                 dateFormat: 'yyyy/mm/dd',
@@ -761,6 +782,7 @@ try {
         });
     </script>
 
+    <script src="{{ asset('assets/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatables/dataTables.buttons.min.js') }}"></script>

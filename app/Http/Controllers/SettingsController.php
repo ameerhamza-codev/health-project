@@ -83,6 +83,10 @@ class SettingsController extends Controller
     {
 
         $user = Patient::find($request->id);
+        if($request->submit == "Save" && $request->test_status=="Success" && ($request->test ==null || $request->ID_front ==null || $request->ID_back ==null)){
+            return redirect()->back()->with('error', 'Images are not uploaded');
+        }
+       
         $user->test_no = '1';
         $user->result = $request->test_status;
         $user->csv_date = Carbon::now();

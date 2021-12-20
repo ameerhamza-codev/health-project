@@ -69,7 +69,7 @@ App::setLocale(Session('app_locale'));
                         <table id="default-datatable" class="display table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Test ID</th>
+                                   
 
                                     <th>Patient</th>
 
@@ -84,8 +84,7 @@ App::setLocale(Session('app_locale'));
                                     <form method="POST" action="{{ route('accept_session') }}">
                                         @csrf
                                         <input type="hidden" name="id" value="{{$patient->id}}">
-                                        <td class="text-dark">{{$patient->test_no }}</td>
-                                        <td class="text-dark">{{$patient->first_name}} {{$patient->last_name}}</td>
+                                       <td class="text-dark">{{$patient->first_name}} {{$patient->last_name}}</td>
                                         <td class="text-dark">{{$patient->created_at}}</td>
                                         @if($patient->test_status == null)
                                         <td><a href="/host/{{$patient->room}}"><button type="button" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Access Test')}}</button></a> 
