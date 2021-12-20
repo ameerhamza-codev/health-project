@@ -102,12 +102,12 @@ $patient = Patient::all()->sortByDesc('id');
                                             <td>
                                                 <!-- <a href="{{env('APP_URL').$patient->test}}" target="_blank"><img src="{{env('APP_URL').$patient->test}}" alt="" style="max-width: 50px; max-height:50px"></a> -->
                                                 <button type="button" value="{{env('APP_URL').$patient->ID_back}},{{env('APP_URL').$patient->ID_front}},{{env('APP_URL').$patient->test}}" id="modalbutton" class="btn btn-rounded btn-primary-rgba"><i class="feather icon-image"></i></button>
+                                                <br>
                                             </td>
-                                            <td><input type="hidden" name="id" value="{{$patient->id}}"></td>
+                                            <td>
+                                                <input type="hidden" name="id" value="{{$patient->id}}">
+                                            </td>
                                         </form>
-
-
-
                                     </tr>
 
                                     

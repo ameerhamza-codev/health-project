@@ -2,24 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\CountryCode;
-use App\Patient;
-use Illuminate\Contracts\Cache\Store;
-use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Illuminate\Support\Facades\Validator;
-use App\ZoomMeetings;
-use Illuminate\Support\Facades\Redirect;
-use App\Events\meeting;
 use App\Http\Controllers\notifController;
+use App\Patient;
+use App\ZoomMeetings;
+use Illuminate\Contracts\Cache\Store;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class PatientController extends Controller
 {
     public function index()
-
     {
-        $code = CountryCode::all();
+        $code     = CountryCode::all();
         $patients = Patient::all();
         return view('patient.index', compact('code', 'patients'));
     }
@@ -27,14 +25,11 @@ class PatientController extends Controller
     public function store(Request $request)
     {
 
-
-
-
-        $patient = new Patient();
+        $patient             = new Patient();
         $patient->first_name = $request->fname;
-        $patient->last_name = $request->lname;
-        $patient->email = $request->email;
-        $patient->phone = $request->code . $request->phone;
+        $patient->last_name  = $request->lname;
+        $patient->email      = $request->email;
+        $patient->phone      = $request->code . $request->phone;
 
         if ($request->dob == null) {
             $patient->date_of_birth = $request->dob1;
@@ -47,12 +42,17 @@ class PatientController extends Controller
         }
 
         $patient->save();
+        $patient->room = "room_".md5(uniqid($patient->id, true));
+        $patient->save();
 
         Session(['patient' => $patient->id]);
         //event(new meeting($patient));
         $notif = new notifController();
         $notif->createnotifurl('New Patient', $patient->first_name . ' is waiting for appointment', env('APP_URL') . '/notif');
-        return redirect('/timer');
+
+
+        return redirect('/meeting/'.$patient->room);
+        //return redirect('/timer');
     }
     public function check(Request $request)
     {
@@ -80,11 +80,9 @@ class PatientController extends Controller
         return response()->json($patient);
     }
 
-
     public function status()
     {
         $patient = Patient::find(Session('patient'));
-
 
         if ($patient->test_status != null) {
 
@@ -98,13 +96,10 @@ class PatientController extends Controller
     public function upload(Request $request)
     {
 
-
-
-
         if ($request->hasFile('Test') && $request->hasFile('IDBack') && $request->hasFile('IDFront')) {
             $validator = Validator::make($request->all(), [
-                'Test' => 'required|mimes:jpg,jpeg,png',
-                'IDBack' => 'required|mimes:jpg,jpeg,png',
+                'Test'    => 'required|mimes:jpg,jpeg,png',
+                'IDBack'  => 'required|mimes:jpg,jpeg,png',
                 'IDFront' => 'required|mimes:jpg,jpeg,png',
             ]);
 
@@ -113,17 +108,17 @@ class PatientController extends Controller
                     ->with(['error' => "Please Upload Valid Image Files"])
                     ->withInput();
             } else {
-                $test = $request->file('Test');
+                $test  = $request->file('Test');
                 $front = $request->file('IDBack');
-                $back = $request->file('IDFront');
+                $back  = $request->file('IDFront');
                 Storage::putFileAs('public/images/' . Session('patient'), $test, 'test.jpg');
                 Storage::putFileAs('public/images/' . Session('patient'), $front, 'front.jpg');
                 Storage::putFileAs('public/images/' . Session('patient'), $back, 'back.jpg');
 
-                $user = Patient::Where('id', Session('patient'))->first();
-                $user->test = Storage::url('app/public/images/' . Session('patient') . '/test.jpg');
+                $user           = Patient::Where('id', Session('patient'))->first();
+                $user->test     = Storage::url('app/public/images/' . Session('patient') . '/test.jpg');
                 $user->ID_front = Storage::url('app/public/images/' . Session('patient') . '/front.jpg');
-                $user->ID_back = Storage::url('app/public/images/' . Session('patient') . '/back.jpg');
+                $user->ID_back  = Storage::url('app/public/images/' . Session('patient') . '/back.jpg');
 
                 $user->save();
 

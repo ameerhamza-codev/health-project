@@ -14,7 +14,7 @@ class AddPerformed1ToPatients extends Migration
     public function up()
     {
         Schema::table('patients', function (Blueprint $table) {
-            $table->string('performed_by')->nullable();
+            //$table->string('performed_by')->nullable();
             
         });
     }

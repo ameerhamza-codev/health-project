@@ -96,6 +96,17 @@ Route::post('/patient-area', 'PatientController@store')->name('patient.store');
 Route::post('/upload','PatientController@upload')->name('patient.upload');
 Route::post('/update_meeting',"ZoomController@update")->name('meeting.update');
 
+Route::prefix('meeting')->group(function () {
+    Route::get('/end', 'MeetingController@end')->name('meeting.end');
+    Route::post('/save-records', 'MeetingController@saveRecords')->name('meeting.saveRecords');
+    Route::get('/{room}', 'MeetingController@index')->name('meeting.join');
+});
+
+Route::prefix('host')->group(function () {
+    Route::get('/{room}/end', 'MeetingController@enddoctorside')->name('meeting.enddoctorside');
+    Route::get('/{room}', 'MeetingController@host')->name('meeting.host');
+});
+
 
 
 Route::post('/patientcheck', 'PatientController@check')->name('checkno');

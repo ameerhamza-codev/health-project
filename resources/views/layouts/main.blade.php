@@ -141,4 +141,4 @@ App::setLocale(Session('app_locale'));
     //     });
     // }
 </script>
-<script>(function(w,d, s, id) {if(typeof(w.webpushr)!=='undefined') return;w.webpushr=w.webpushr||function(){(w.webpushr.q=w.webpushr.q||[]).push(arguments)};var js, fjs = d.getElementsByTagName(s)[0];js = d.createElement(s); js.id = id;js.async=1;js.src = "https://cdn.webpushr.com/app.min.js";fjs.parentNode.appendChild(js);}(window,document, 'script', 'webpushr-jssdk'));webpushr('setup',{'key':'BFhLUtoOPC1cvoy-jPk5vt5wZJsNQKQzCLDDSfn6EWpMTma64vHmdhk9ByS4cHzCQtBp8x_GunFHtVFizTHguM0' ,'integration':'popup' });</script>
+<!-- start webpushr code --> <script>(function(w,d, s, id) {if(typeof(w.webpushr)!=='undefined') return;w.webpushr=w.webpushr||function(){(w.webpushr.q=w.webpushr.q||[]).push(arguments)};var js, fjs = d.getElementsByTagName(s)[0];js = d.createElement(s); js.id = id;js.async=1;js.src = "https://cdn.webpushr.com/app.min.js";fjs.parentNode.appendChild(js);}(window,document, 'script', 'webpushr-jssdk'));webpushr('setup',{'key':'BC_ywiCMO_pRO4Xcn0Kdq7jcgA5NyfyghI-QcvRdg4G4zyUCZ4RyvunsXF2NCR_QuWjb6kCn5tXBObXPgtbSf7o' });</script><!-- end webpushr code -->

@@ -30,11 +30,11 @@ $body = [
     'headers' => $zmc->headers,
     "page_size" => 100,
 ];
+$r = [];
 try {
 
     $response =  $zmc->client->get($url . $path, $body);
     $data = json_decode($response->getBody(), true);
-    $r = [];
     $count = 0;
     
     for ($i = 0; $i < count($data['meetings']); $i++) {
@@ -47,12 +47,13 @@ try {
     }
     $meetingsno = $meetingsno + $count;
 } catch (\Exception $e) {
-    return redirect()->back()->with('error', $e->getMessage());
+    //return redirect()->back()->with('error', $e->getMessage());
 }
 
 
 
 //$name = str_replace(': Event_by_Calendly', '', $r['1']['topic']);
+
 
 
 

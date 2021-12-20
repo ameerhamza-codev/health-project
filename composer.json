@@ -21,7 +21,7 @@
         "nunomaduro/laravel-desktop-notifier": "^2.5",
         "pusher/pusher-php-server": "^7.0",
         "spatie/laravel-google-calendar": "^3.4",
-        "twilio/sdk": "^6.31"
+        "twilio/sdk": "^6.32"
     },
     "require-dev": {
         "filp/whoops": "^2.0",

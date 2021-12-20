@@ -88,7 +88,8 @@ App::setLocale(Session('app_locale'));
                                         <td class="text-dark">{{$patient->first_name}} {{$patient->last_name}}</td>
                                         <td class="text-dark">{{$patient->created_at}}</td>
                                         @if($patient->test_status == null)
-                                        <td> <button type="button" data-toggle="modal" data-target=".bd-example-modal-sm" onclick="asses()"  class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Access Test')}}</button></td>
+                                        <td><a href="/host/{{$patient->room}}"><button type="button" class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Access Test')}}</button></a> 
+                                            <!-- <button type="button" data-toggle="modal" data-target=".bd-example-modal-sm" onclick="asses()"  class="btn btn-primary-rgba"><i class="feather icon-file-text mr-2"></i>{{__('Access Test')}}</button> --></td>
                                         @endif
 
                                 </tr>
